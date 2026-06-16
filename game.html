@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VC Tycoon – TEQ Technologies</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --red:#b91c1c;--red-dark:#7f1d1d;--red-deep:#450a0a;
+      --green:#15803d;--green-light:#bbf7d0;
+      --amber:#b45309;--amber-light:#fef3c7;
+      --bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;
+      --border:#2a2a2a;--text:#f5f5f5;--muted:#888;
+    }
+    body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+    /* NAV */
+    .topnav{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.2rem;background:#111;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-circle{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.75rem;color:var(--red);flex-shrink:0;}
+    .topnav .brand{font-weight:800;font-size:1rem;color:#fff;}
+    .topnav .nav-links{display:flex;gap:8px;}
+    .nav-btn{background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:999px;cursor:pointer;font-size:0.78rem;font-weight:600;text-decoration:none;transition:all 0.15s;}
+    .nav-btn:hover{border-color:var(--red);color:var(--red);}
+    .nav-btn.active{background:var(--red);border-color:var(--red);color:#fff;}
+
+    /* HERO */
+    .game-hero{background:linear-gradient(135deg,#b91c1c 0%,#7f1d1d 50%,#450a0a 100%);padding:2rem 1.2rem 1.5rem;text-align:center;}
+    .game-hero h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:900;color:#fff;letter-spacing:-0.5px;}
+    .game-hero p{font-size:0.88rem;color:rgba(255,255,255,0.78);margin-top:6px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.55;}
+    .hero-badges{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+    .hbadge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:0.7rem;padding:3px 10px;border-radius:999px;font-weight:600;}
+
+    /* SCREENS */
+    .screen{display:none;max-width:700px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+    .screen.active{display:block;}
+
+    /* START SCREEN */
+    .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1.5rem;}
+    .mode-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1.3rem 1rem;cursor:pointer;text-align:center;transition:all 0.18s;}
+    .mode-card:hover{border-color:var(--red);transform:translateY(-2px);}
+    .mode-card.selected{border-color:var(--red);background:#1a0808;}
+    .mode-icon{font-size:2rem;margin-bottom:8px;}
+    .mode-title{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:4px;}
+    .mode-desc{font-size:0.75rem;color:var(--muted);line-height:1.45;}
+    .start-btn{display:block;width:100%;margin-top:1.5rem;background:var(--red);border:none;color:#fff;padding:14px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:background 0.15s,transform 0.12s;}
+    .start-btn:hover{background:#991b1b;transform:scale(1.02);}
+    .leaderboard-preview{margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+    .lb-header{background:var(--red-dark);padding:0.7rem 1rem;font-weight:700;font-size:0.85rem;display:flex;align-items:center;gap:6px;}
+    .lb-row{display:flex;align-items:center;gap:10px;padding:0.6rem 1rem;border-bottom:1px solid var(--border);font-size:0.82rem;}
+    .lb-row:last-child{border-bottom:none;}
+    .lb-rank{font-weight:700;color:var(--red);width:20px;}
+    .lb-name{flex:1;color:#ddd;}
+    .lb-score{font-weight:700;color:#fff;}
+    .lb-badge-row{display:flex;gap:6px;}
+
+    /* GAME SCREEN */
+    .hud{display:flex;gap:8px;margin-bottom:1.2rem;flex-wrap:wrap;}
+    .hud-cell{flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.8rem;text-align:center;}
+    .hud-cell .h-num{font-size:1.2rem;font-weight:800;color:var(--red);}
+    .hud-cell .h-lbl{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px;}
+    .hud-cell.green .h-num{color:#4ade80;}
+    .hud-cell.amber .h-num{color:#fbbf24;}
+
+    .progress-bar{height:4px;background:var(--border);border-radius:999px;margin-bottom:1.2rem;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ef4444);border-radius:999px;transition:width 0.4s;}
+
+    .startup-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;}
+    .startup-header{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
+    .startup-logo{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;}
+    .startup-name{font-size:1.1rem;font-weight:800;color:#fff;}
+    .startup-tag{font-size:0.72rem;color:var(--muted);margin-top:2px;}
+    .pitch-text{font-size:0.85rem;color:#ccc;line-height:1.6;margin-bottom:1rem;background:var(--surface2);border-left:3px solid var(--red);padding:0.8rem 1rem;border-radius:0 8px 8px 0;font-style:italic;}
+
+    .metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
+    .metric{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:0.65rem 0.5rem;text-align:center;}
+    .metric .m-val{font-size:0.95rem;font-weight:700;}
+    .metric .m-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.3px;}
+    .metric.good .m-val{color:#4ade80;}
+    .metric.bad .m-val{color:#f87171;}
+    .metric.neutral .m-val{color:#fbbf24;}
+
+    .risk-flags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;}
+    .risk-tag{font-size:0.7rem;padding:3px 10px;border-radius:999px;font-weight:600;}
+    .risk-high{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d;}
+    .risk-mid{background:#1c1917;color:#fcd34d;border:1px solid #78350f;}
+    .risk-low{background:#0d2318;color:#86efac;border:1px solid #14532d;}
+
+    .question-box{background:var(--surface2);border:1px solid #333;border-radius:12px;padding:1rem;margin-bottom:1rem;}
+    .question-box .q-label{font-size:0.7rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+    .question-box .q-text{font-size:0.92rem;color:#eee;font-weight:600;line-height:1.45;}
+
+    .action-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:0.5rem;}
+    .action-btn{border:none;border-radius:12px;padding:1rem 0.5rem;cursor:pointer;font-weight:700;font-size:0.82rem;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.18s;line-height:1.3;}
+    .action-btn .a-icon{font-size:1.3rem;}
+    .action-btn:hover{transform:translateY(-2px);}
+    .btn-invest{background:#15803d;color:#fff;}
+    .btn-invest:hover{background:#166534;}
+    .btn-staged{background:#b45309;color:#fff;}
+    .btn-staged:hover{background:#92400e;}
+    .btn-reject{background:#7f1d1d;color:#fff;}
+    .btn-reject:hover{background:#991b1b;}
+    .action-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+
+    /* FEEDBACK */
+    .feedback-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+    .feedback-overlay.show{display:flex;}
+    .feedback-box{background:var(--surface);border-radius:18px;padding:2rem 1.5rem;max-width:420px;width:100%;text-align:center;border:2px solid var(--border);animation:popIn 0.25s ease;}
+    @keyframes popIn{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+    .fb-icon{font-size:3rem;margin-bottom:0.8rem;}
+    .fb-title{font-size:1.3rem;font-weight:800;margin-bottom:0.5rem;}
+    .fb-title.win{color:#4ade80;}
+    .fb-title.lose{color:#f87171;}
+    .fb-title.ok{color:#fbbf24;}
+    .fb-body{font-size:0.85rem;color:#bbb;line-height:1.6;margin-bottom:0.5rem;}
+    .fb-points{font-size:1.1rem;font-weight:700;margin:0.8rem 0;}
+    .fb-points.pos{color:#4ade80;}
+    .fb-points.neg{color:#f87171;}
+    .fb-next{background:var(--red);border:none;color:#fff;padding:11px 28px;border-radius:999px;font-weight:700;font-size:0.9rem;cursor:pointer;margin-top:0.5rem;transition:background 0.15s;}
+    .fb-next:hover{background:#991b1b;}
+
+    /* RESULTS SCREEN */
+    .result-hero{text-align:center;padding:1.5rem 0 1rem;}
+    .result-grade{font-size:4rem;margin-bottom:0.5rem;}
+    .result-title{font-size:1.6rem;font-weight:900;margin-bottom:6px;}
+    .result-sub{font-size:0.88rem;color:var(--muted);line-height:1.5;}
+    .result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.5rem 0;}
+    .rs-cell{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;}
+    .rs-cell .rs-num{font-size:1.5rem;font-weight:800;color:var(--red);}
+    .rs-cell.green .rs-num{color:#4ade80;}
+    .rs-cell.amber .rs-num{color:#fbbf24;}
+    .rs-cell .rs-lbl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:4px;}
+    .breakdown{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.2rem;}
+    .bd-header{background:var(--red-dark);padding:0.75rem 1rem;font-weight:700;font-size:0.85rem;}
+    .bd-row{display:flex;align-items:center;gap:10px;padding:0.7rem 1rem;border-bottom:1px solid var(--border);font-size:0.82rem;}
+    .bd-row:last-child{border-bottom:none;}
+    .bd-company{flex:1;color:#ddd;}
+    .bd-decision{font-size:0.72rem;padding:2px 8px;border-radius:999px;font-weight:600;}
+    .bd-invest{background:#0d2318;color:#4ade80;border:1px solid #14532d;}
+    .bd-staged{background:#1c1917;color:#fbbf24;border:1px solid #78350f;}
+    .bd-reject{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d;}
+    .bd-pts{font-weight:700;min-width:50px;text-align:right;}
+    .bd-pts.pos{color:#4ade80;}
+    .bd-pts.neg{color:#f87171;}
+    .result-btns{display:flex;gap:10px;}
+    .result-btns button{flex:1;padding:12px;border-radius:12px;font-weight:700;font-size:0.88rem;cursor:pointer;border:none;transition:all 0.15s;}
+    .btn-replay{background:var(--red);color:#fff;}
+    .btn-replay:hover{background:#991b1b;}
+    .btn-refs{background:var(--surface2);border:1.5px solid var(--border);color:#ddd;}
+    .btn-refs:hover{border-color:var(--red);color:var(--red);}
+
+    /* NAME INPUT */
+    .name-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;}
+    .name-section label{font-size:0.8rem;color:var(--muted);display:block;margin-bottom:6px;}
+    .name-section input{width:100%;background:var(--surface2);border:1.5px solid var(--border);color:#fff;padding:9px 12px;border-radius:9px;font-size:0.9rem;outline:none;}
+    .name-section input:focus{border-color:var(--red);}
+    .save-score-btn{width:100%;margin-top:10px;background:var(--surface2);border:1.5px solid var(--border);color:#ccc;padding:9px;border-radius:9px;font-weight:600;font-size:0.82rem;cursor:pointer;transition:all 0.15s;}
+    .save-score-btn:hover{border-color:var(--red);color:var(--red);}
+
+    .timer-ring{position:relative;width:50px;height:50px;flex-shrink:0;}
+    .timer-ring svg{transform:rotate(-90deg);}
+    .timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;color:var(--red);}
+
+    @media(max-width:480px){
+      .mode-grid{grid-template-columns:1fr;}
+      .metrics-grid{grid-template-columns:repeat(2,1fr);}
+      .action-row{grid-template-columns:1fr;gap:8px;}
+      .result-stats{grid-template-columns:repeat(2,1fr);}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a href="index.html" class="logo">
+    <div class="logo-circle">TEQ</div>
+    <span class="brand">TEQ Technologies</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-btn">📚 References</a>
+    <a href="game.html" class="nav-btn active">🎮 VC Game</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="game-hero">
+  <h1>🎯 VC Investment Tycoon</h1>
+  <p>You are Girish Chhabria. Analyse 6 Indian IT startups, make smart investment calls, and grow your VC portfolio.</p>
+  <div class="hero-badges">
+    <span class="hbadge">DCF Valuation</span>
+    <span class="hbadge">Risk Analysis</span>
+    <span class="hbadge">EV/Sales Multiples</span>
+    <span class="hbadge">Timed Decisions</span>
+  </div>
+</div>
+
+<!-- START SCREEN -->
+<div class="screen active" id="screenStart">
+  <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.3rem;">Choose Difficulty</h2>
+  <p style="font-size:0.8rem;color:#888;margin-bottom:0.5rem;">Higher difficulty = less time per decision + harder startups</p>
+  <div class="mode-grid">
+    <div class="mode-card selected" data-mode="easy" onclick="selectMode('easy',this)">
+      <div class="mode-icon">🌱</div>
+      <div class="mode-title">Analyst</div>
+      <div class="mode-desc">45 sec per startup · Clear signals · Perfect for beginners</div>
+    </div>
+    <div class="mode-card" data-mode="medium" onclick="selectMode('medium',this)">
+      <div class="mode-icon">📊</div>
+      <div class="mode-title">Associate</div>
+      <div class="mode-desc">30 sec per startup · Mixed signals · Moderate challenge</div>
+    </div>
+    <div class="mode-card" data-mode="hard" onclick="selectMode('hard',this)">
+      <div class="mode-icon">🔥</div>
+      <div class="mode-title">Partner</div>
+      <div class="mode-desc">15 sec per startup · Deceptive data · Expert only</div>
+    </div>
+    <div class="mode-card" data-mode="tycoon" onclick="selectMode('tycoon',this)">
+      <div class="mode-icon">💎</div>
+      <div class="mode-title">Tycoon</div>
+      <div class="mode-desc">10 sec · All curveballs · Legendary difficulty</div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="startGame()">🚀 Start Investment Round</button>
+
+  <div class="leaderboard-preview">
+    <div class="lb-header">🏆 &nbsp;Leaderboard – Top Investors</div>
+    <div id="lbRows"><div class="lb-row" style="color:#666;font-size:0.8rem;padding:1rem;">No scores yet — be the first!</div></div>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div class="screen" id="screenGame">
+  <div class="hud">
+    <div class="hud-cell">
+      <div class="h-num" id="hudRound">1/6</div>
+      <div class="h-lbl">Round</div>
+    </div>
+    <div class="hud-cell green">
+      <div class="h-num" id="hudScore">0</div>
+      <div class="h-lbl">Score</div>
+    </div>
+    <div class="hud-cell amber">
+      <div class="h-num" id="hudFund">₹600M</div>
+      <div class="h-lbl">Fund Left</div>
+    </div>
+    <div class="hud-cell">
+      <div style="display:flex;justify-content:center;">
+        <div class="timer-ring">
+          <svg width="50" height="50" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#2a2a2a" stroke-width="4"/>
+            <circle id="timerCircle" cx="25" cy="25" r="20" fill="none" stroke="#b91c1c" stroke-width="4"
+              stroke-dasharray="125.6" stroke-dashoffset="0" stroke-linecap="round"/>
+          </svg>
+          <div class="timer-num" id="timerNum">30</div>
+        </div>
+      </div>
+      <div class="h-lbl">Timer</div>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="startup-card" id="startupCard">
+    <div class="startup-header">
+      <div class="startup-logo" id="startupLogo">🏢</div>
+      <div>
+        <div class="startup-name" id="startupName">Loading…</div>
+        <div class="startup-tag" id="startupTag"></div>
+      </div>
+    </div>
+    <div class="pitch-text" id="pitchText"></div>
+    <div class="metrics-grid" id="metricsGrid"></div>
+    <div class="risk-flags" id="riskFlags"></div>
+  </div>
+
+  <div class="question-box">
+    <div class="q-label">💼 VC Decision</div>
+    <div class="q-text" id="questionText">How much will you invest in this startup?</div>
+  </div>
+
+  <div class="action-row">
+    <button class="action-btn btn-invest" onclick="decide('invest')" id="btnInvest">
+      <span class="a-icon">💰</span>Full Invest<br><small style="font-weight:400;font-size:0.7rem;">INR 30M</small>
+    </button>
+    <button class="action-btn btn-staged" onclick="decide('staged')" id="btnStaged">
+      <span class="a-icon">📋</span>Staged<br><small style="font-weight:400;font-size:0.7rem;">Milestones</small>
+    </button>
+    <button class="action-btn btn-reject" onclick="decide('reject')" id="btnReject">
+      <span class="a-icon">❌</span>Reject<br><small style="font-weight:400;font-size:0.7rem;">Pass</small>
+    </button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="screenResult">
+  <div class="result-hero">
+    <div class="result-grade" id="resultGrade">🏆</div>
+    <div class="result-title" id="resultTitle">Investment Round Complete</div>
+    <div class="result-sub" id="resultSub"></div>
+  </div>
+  <div class="result-stats">
+    <div class="rs-cell green"><div class="rs-num" id="rsFinalScore">0</div><div class="rs-lbl">Final Score</div></div>
+    <div class="rs-cell"><div class="rs-num" id="rsCorrect">0/6</div><div class="rs-lbl">Correct Calls</div></div>
+    <div class="rs-cell amber"><div class="rs-num" id="rsReturn">0%</div><div class="rs-lbl">Portfolio Return</div></div>
+  </div>
+  <div class="breakdown">
+    <div class="bd-header">📋 &nbsp;Decision Breakdown</div>
+    <div id="breakdownRows"></div>
+  </div>
+  <div class="name-section">
+    <label>Enter your name for the leaderboard</label>
+    <input type="text" id="playerName" placeholder="e.g. Ahmad Haziq" maxlength="20"/>
+    <button class="save-score-btn" onclick="saveScore()">💾 Save My Score</button>
+  </div>
+  <div class="result-btns">
+    <button class="btn-replay" onclick="restartGame()">🔄 Play Again</button>
+    <button class="btn-refs" onclick="window.location.href='index.html'">📚 View References</button>
+  </div>
+</div>
+
+<!-- FEEDBACK OVERLAY -->
+<div class="feedback-overlay" id="feedbackOverlay">
+  <div class="feedback-box">
+    <div class="fb-icon" id="fbIcon">🎉</div>
+    <div class="fb-title" id="fbTitle">Great Call!</div>
+    <div class="fb-body" id="fbBody"></div>
+    <div class="fb-points" id="fbPoints">+150 pts</div>
+    <button class="fb-next" onclick="nextRound()">Next Startup →</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+//  STARTUP DATA – 6 companies
+// ════════════════════════════════
+const STARTUPS = [
+  {
+    name: "TEQ Technologies",
+    logo: "🔴", logoBg: "#450a0a", logoColor: "#fca5a5",
+    sector: "Accounting ERP · CRM · Cloud Services · Mumbai",
+    pitch: '"India\'s IT world is booming. TEQ has grabbed a spot in fast-growing SME accounting, CRM, and cloud — all with a 99% product attachment rate and 100% customer retention. Your INR 30M will ignite explosive growth."',
+    metrics: [
+      {label:"Revenue (Yr 1)", val:"₹300M", cls:"good"},
+      {label:"Op. Margin", val:"-2%", cls:"bad"},
+      {label:"Retention", val:"100%", cls:"good"},
+      {label:"EV/Sales", val:"3.18x", cls:"neutral"},
+      {label:"Growth Proj.", val:"18% CAGR", cls:"good"},
+      {label:"TAM (2026)", val:"₹147B", cls:"good"},
+    ],
+    risks: ["High cust. acq. cost","Market maturity gap","Cash flow pressure"],
+    riskClass:["risk-mid","risk-high","risk-high"],
+    correct: "staged",
+    explanation: "TEQ has brilliant metrics — 100% retention, huge TAM — but is operating at a loss in Year 1. The VC approach (as per the case) recommends staged investment tied to milestones, e.g. profitability by T+3. Full investment is risky; rejection means missing a high-growth opportunity.",
+    fundImpact: {"invest":-30,"staged":-15,"reject":0},
+    returnMultiple: {"invest":3.5,"staged":2.2,"reject":0},
+  },
+  {
+    name: "CloudNova India",
+    logo: "☁️", logoBg: "#0c1a2e", logoColor: "#60a5fa",
+    sector: "Cloud Infrastructure · B2B SaaS · Bengaluru",
+    pitch: '"We provide government-compliant data localisation cloud services for Indian enterprises. Data sovereignty is now mandated — every Indian company MUST store data locally. We are the pick-and-shovel play."',
+    metrics: [
+      {label:"Revenue", val:"₹180M", cls:"neutral"},
+      {label:"Op. Margin", val:"8%", cls:"neutral"},
+      {label:"YoY Growth", val:"35%", cls:"good"},
+      {label:"Debt/Equity", val:"40%", cls:"bad"},
+      {label:"ROCE", val:"12%", cls:"neutral"},
+      {label:"Churn Rate", val:"18%", cls:"bad"},
+    ],
+    risks: ["High debt load","Elevated churn","Intense AWS/Azure competition"],
+    riskClass:["risk-high","risk-high","risk-mid"],
+    correct: "reject",
+    explanation: "Despite compelling government tailwinds, CloudNova has an 18% annual churn rate — a critical red flag for a SaaS business — and carries high debt. The cloud market is dominated by AWS, Azure, and GCP. Rejecting preserves capital for better opportunities.",
+    fundImpact: {"invest":-30,"staged":-15,"reject":0},
+    returnMultiple: {"invest":0.6,"staged":0.8,"reject":0},
+  },
+  {
+    name: "FinStack AI",
+    logo: "🤖", logoBg: "#1e1427", logoColor: "#c084fc",
+    sector: "AI-powered FinTech · SME Lending · Pune",
+    pitch: '"We use machine learning to score SME creditworthiness in 60 seconds, enabling instant micro-loans. 60 million Indian SMEs are underserved by banks. Our NPL ratio is below 2% — better than most PSU banks."',
+    metrics: [
+      {label:"Revenue", val:"₹85M", cls:"neutral"},
+      {label:"Op. Margin", val:"22%", cls:"good"},
+      {label:"NPL Ratio", val:"1.8%", cls:"good"},
+      {label:"Loan Book", val:"₹500M", cls:"good"},
+      {label:"Founder Exp.", val:"12 yrs", cls:"good"},
+      {label:"Regulatory", val:"Pending RBI", cls:"bad"},
+    ],
+    risks: ["RBI approval pending","Regulatory uncertainty","New RBI FinTech policy risk"],
+    riskClass:["risk-high","risk-high","risk-mid"],
+    correct: "staged",
+    explanation: "Excellent fundamentals — high margins, low NPL, experienced founder. However, the pending RBI license is a deal-breaker for full investment. Staged funding (first tranche now, second tranche upon RBI approval) manages regulatory risk while securing a position in a high-growth opportunity.",
+    fundImpact: {"invest":-30,"staged":-15,"reject":0},
+    returnMultiple: {"invest":4.0,"staged":3.5,"reject":0},
+  },
+  {
+    name: "AgriSense Technologies",
+    logo: "🌾", logoBg: "#0d2318", logoColor: "#4ade80",
+    sector: "AgriTech · IoT Crop Monitoring · Hyderabad",
+    pitch: '"IoT sensors + satellite data + AI tell farmers exactly when to water, fertilise, and harvest. We\'ve proven 40% yield improvement across 12,000 farms. India has 140M farmers — we\'ve barely scratched the surface."',
+    metrics: [
+      {label:"Revenue", val:"₹45M", cls:"bad"},
+      {label:"Op. Margin", val:"-35%", cls:"bad"},
+      {label:"Farms Active", val:"12,000", cls:"neutral"},
+      {label:"Sales/Capital", val:"0.4x", cls:"bad"},
+      {label:"Burn Rate", val:"₹8M/mo", cls:"bad"},
+      {label:"Churn", val:"6%", cls:"good"},
+    ],
+    risks: ["Extremely capital intensive","Very high burn rate","No path to profit visible","Hardware dependency"],
+    riskClass:["risk-high","risk-high","risk-high","risk-mid"],
+    correct: "reject",
+    explanation: "While the social impact is compelling, AgriSense is burning ₹8M per month with a -35% operating margin and a sales-to-capital ratio of only 0.4x (industry benchmark is ~2x). This is not a capital-light business. Reject and preserve your fund for scalable opportunities.",
+    fundImpact: {"invest":-30,"staged":-15,"reject":0},
+    returnMultiple: {"invest":0.3,"staged":0.5,"reject":0},
+  },
+  {
+    name: "MediTrack ERP",
+    logo: "🏥", logoBg: "#1c1917", logoColor: "#fcd34d",
+    sector: "Healthcare IT · Hospital Management ERP · Chennai",
+    pitch: '"Every hospital in India still runs on Excel and paper. We offer an all-in-one ERP — billing, OPD, IPD, inventory, pharmacy. 200 hospitals signed up in 18 months. Recurring SaaS revenue. Zero debt. Profitable."',
+    metrics: [
+      {label:"Revenue", val:"₹220M", cls:"good"},
+      {label:"Op. Margin", val:"19%", cls:"good"},
+      {label:"Hospitals", val:"200+", cls:"good"},
+      {label:"Debt", val:"₹0", cls:"good"},
+      {label:"ROCE", val:"24%", cls:"good"},
+      {label:"EV/Sales", val:"5.2x", cls:"bad"},
+    ],
+    risks: ["High valuation ask","NABH compliance complexity","Slow hospital procurement cycles"],
+    riskClass:["risk-high","risk-mid","risk-mid"],
+    correct: "invest",
+    explanation: "MediTrack checks nearly every box in Girish's 9-point evaluation matrix: profitable, zero debt, 24% ROCE, recurring SaaS, 200+ customers, experienced sector. The 5.2x EV/Sales is steep but justified by the strong fundamentals. This is a full investment opportunity.",
+    fundImpact: {"invest":-30,"staged":-15,"reject":0},
+    returnMultiple: {"invest":5.5,"staged":3.2,"reject":0},
+  },
+  {
+    name: "RetailBot AI",
+    logo: "🛒", logoBg: "#3f1515", logoColor: "#fdba74",
+    sector: "Retail AI · Demand Forecasting · Mumbai",
+    pitch: '"Our AI reduces retail inventory wastage by 32%. We have pilots with 3 large D-Mart competitors. The Indian retail market is USD 900 billion. Even 1% market share = USD 9B opportunity. We need runway."',
+    metrics: [
+      {label:"Revenue", val:"₹12M", cls:"bad"},
+      {label:"Op. Margin", val:"-80%", cls:"bad"},
+      {label:"Pilots", val:"3 (PoC)", cls:"neutral"},
+      {label:"Founder Track", val:"1st startup", cls:"bad"},
+      {label:"TAM", val:"₹75T", cls:"good"},
+      {label:"Time to Rev.", val:"18+ months", cls:"bad"},
+    ],
+    risks: ["Pre-revenue stage","First-time founder","PoC not yet commercial","18+ months to revenue"],
+    riskClass:["risk-high","risk-high","risk-high","risk-high"],
+    correct: "reject",
+    explanation: "Despite a massive TAM, RetailBot is pre-revenue with a first-time founder and all 4 risk flags in the red zone. Girish's philosophy requires demonstrated execution. This fits an angel/seed stage, not a VC growth round. Rejecting is the prudent call.",
+    fundImpact: {"invest":-30,"staged":-15,"reject":0},
+    returnMultiple: {"invest":0.2,"staged":0.4,"reject":0},
+  },
+];
+
+// ════════════════════════════════
+//  GAME STATE
+// ════════════════════════════════
+const MODES = {
+  easy:   {time:45, label:"Analyst"},
+  medium: {time:30, label:"Associate"},
+  hard:   {time:15, label:"Partner"},
+  tycoon: {time:10, label:"Tycoon"},
+};
+
+let mode = "easy";
+let currentRound = 0;
+let score = 0;
+let fund = 600;
+let timerInterval = null;
+let timeLeft = 30;
+let decisions = [];
+let shuffled = [];
+
+function selectMode(m, el) {
+  mode = m;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  currentRound = 0; score = 0; fund = 600; decisions = [];
+  shuffled = shuffle(STARTUPS);
+  showScreen('screenGame');
+  loadRound();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function loadRound() {
+  const s = shuffled[currentRound];
+  const totalTime = MODES[mode].time;
+  timeLeft = totalTime;
+
+  // HUD
+  document.getElementById('hudRound').textContent = `${currentRound+1}/6`;
+  document.getElementById('hudScore').textContent = score;
+  document.getElementById('hudFund').textContent = `₹${fund}M`;
+  document.getElementById('progressFill').style.width = `${(currentRound/6)*100}%`;
+
+  // Card
+  const logo = document.getElementById('startupLogo');
+  logo.textContent = s.logo;
+  logo.style.background = s.logoBg;
+  logo.style.color = s.logoColor;
+  document.getElementById('startupName').textContent = s.name;
+  document.getElementById('startupTag').textContent = s.sector;
+  document.getElementById('pitchText').textContent = s.pitch;
+
+  // Metrics
+  const mg = document.getElementById('metricsGrid');
+  mg.innerHTML = s.metrics.map(m =>
+    `<div class="metric ${m.cls}"><div class="m-val">${m.val}</div><div class="m-lbl">${m.label}</div></div>`
+  ).join('');
+
+  // Risks
+  const rf = document.getElementById('riskFlags');
+  rf.innerHTML = s.risks.map((r,i) =>
+    `<span class="risk-tag ${s.riskClass[i]}">${r}</span>`
+  ).join('');
+
+  // Enable buttons
+  ['btnInvest','btnStaged','btnReject'].forEach(id => {
+    document.getElementById(id).disabled = false;
+  });
+
+  // Timer
+  clearInterval(timerInterval);
+  updateTimer(timeLeft, totalTime);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimer(timeLeft, totalTime);
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      decide('reject', true); // auto-reject on timeout
+    }
+  }, 1000);
+}
+
+function updateTimer(t, total) {
+  document.getElementById('timerNum').textContent = t;
+  const circumference = 125.6;
+  const offset = circumference * (1 - t/total);
+  document.getElementById('timerCircle').style.strokeDashoffset = offset;
+  document.getElementById('timerNum').style.color = t <= 5 ? '#f87171' : '#b91c1c';
+}
+
+function decide(choice, timeout=false) {
+  clearInterval(timerInterval);
+  ['btnInvest','btnStaged','btnReject'].forEach(id => {
+    document.getElementById(id).disabled = true;
+  });
+
+  const s = shuffled[currentRound];
+  const isCorrect = choice === s.correct;
+  const timeBonus = Math.floor(timeLeft * 2);
+
+  let pts = 0, tier = '';
+  if (timeout) {
+    pts = -50; tier = 'timeout';
+  } else if (isCorrect) {
+    pts = 150 + timeBonus;
+    tier = 'correct';
+  } else if (
+    (choice === 'staged' && s.correct === 'invest') ||
+    (choice === 'invest' && s.correct === 'staged')
+  ) {
+    pts = 40; tier = 'close';
+  } else {
+    pts = -80; tier = 'wrong';
+  }
+
+  // Fund impact (simplified)
+  const impact = s.fundImpact[choice] || 0;
+  fund = Math.max(0, fund + impact);
+  score += pts;
+
+  decisions.push({ startup: s, choice, correct: s.correct, pts, isCorrect });
+
+  // Feedback
+  showFeedback(tier, s, choice, pts, timeout);
+}
+
+function showFeedback(tier, s, choice, pts, timeout) {
+  const overlay = document.getElementById('feedbackOverlay');
+  const icons = { correct:'🎯', close:'👍', wrong:'💸', timeout:'⏰' };
+  const titles = { correct:'Smart Call!', close:'Close Enough!', wrong:'Wrong Call', timeout:'Time\'s Up!' };
+  const titleCls = { correct:'win', close:'ok', wrong:'lose', timeout:'lose' };
+
+  document.getElementById('fbIcon').textContent = icons[tier];
+  const t = document.getElementById('fbTitle');
+  t.textContent = titles[tier];
+  t.className = `fb-title ${titleCls[tier]}`;
+
+  let body = `<strong>${s.name}</strong><br>`;
+  body += `You chose: <strong>${choice.toUpperCase()}</strong> · Correct: <strong>${s.correct.toUpperCase()}</strong><br><br>`;
+  body += s.explanation;
+  document.getElementById('fbBody').innerHTML = body;
+
+  const pp = document.getElementById('fbPoints');
+  pp.textContent = (pts >= 0 ? '+' : '') + pts + ' pts';
+  pp.className = `fb-points ${pts >= 0 ? 'pos' : 'neg'}`;
+
+  overlay.classList.add('show');
+}
+
+function nextRound() {
+  document.getElementById('feedbackOverlay').classList.remove('show');
+  currentRound++;
+  if (currentRound >= 6) {
+    showResults();
+  } else {
+    loadRound();
+    document.getElementById('hudScore').textContent = score;
+    document.getElementById('hudFund').textContent = `₹${fund}M`;
+  }
+}
+
+function showResults() {
+  showScreen('screenResult');
+  const correct = decisions.filter(d => d.isCorrect).length;
+  const pct = Math.round((correct/6)*100);
+
+  let grade='🏆', title='Legendary Investor!', sub='You\'ve mastered the art of venture capital.';
+  if (pct < 34) { grade='😓'; title='Back to Business School'; sub='The portfolio took a hit. Study the case study again!'; }
+  else if (pct < 51) { grade='📉'; title='Risky Business'; sub='Some good calls, but the losses hurt. Keep learning.'; }
+  else if (pct < 67) { grade='📊'; title='Decent Analyst'; sub='Solid fundamentals. A bit more due diligence needed.'; }
+  else if (pct < 84) { grade='💼'; title='Sharp VC Associate'; sub='Great instincts! A few calls away from legendary.'; }
+
+  document.getElementById('resultGrade').textContent = grade;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent = sub;
+  document.getElementById('rsFinalScore').textContent = Math.max(0, score);
+  document.getElementById('rsCorrect').textContent = `${correct}/6`;
+  document.getElementById('rsReturn').textContent = `${pct}%`;
+
+  const br = document.getElementById('breakdownRows');
+  br.innerHTML = decisions.map(d => {
+    const cls = d.choice === 'invest' ? 'bd-invest' : d.choice === 'staged' ? 'bd-staged' : 'bd-reject';
+    const ptsCls = d.pts >= 0 ? 'pos' : 'neg';
+    return `<div class="bd-row">
+      <div class="bd-company">${d.startup.logo} ${d.startup.name}</div>
+      <span class="bd-decision ${cls}">${d.choice}</span>
+      <div class="bd-pts ${ptsCls}">${d.pts >= 0?'+':''}${d.pts}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('progressFill').style.width = '100%';
+  renderLeaderboard();
+}
+
+// ════════════════════════════════
+//  LEADERBOARD (localStorage)
+// ════════════════════════════════
+function saveScore() {
+  const name = document.getElementById('playerName').value.trim() || 'Anonymous';
+  const entry = { name, score: Math.max(0,score), mode: MODES[mode].label, date: new Date().toLocaleDateString('en-MY') };
+  let lb = JSON.parse(localStorage.getItem('teq_lb') || '[]');
+  lb.push(entry);
+  lb.sort((a,b) => b.score - a.score);
+  lb = lb.slice(0, 10);
+  localStorage.setItem('teq_lb', JSON.stringify(lb));
+  renderLeaderboard();
+  document.querySelector('.save-score-btn').textContent = '✅ Saved!';
+}
+
+function renderLeaderboard() {
+  let lb = JSON.parse(localStorage.getItem('teq_lb') || '[]');
+  const lbRows = document.getElementById('lbRows');
+  if (!lbRows) return;
+  if (lb.length === 0) {
+    lbRows.innerHTML = '<div class="lb-row" style="color:#666;font-size:0.8rem;padding:1rem;">No scores yet — be the first!</div>';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  lbRows.innerHTML = lb.map((e,i) => `
+    <div class="lb-row">
+      <div class="lb-rank">${medals[i] || (i+1)}</div>
+      <div class="lb-name">${e.name}</div>
+      <div style="font-size:0.7rem;color:#666;margin-right:8px;">${e.mode}</div>
+      <div class="lb-score">${e.score.toLocaleString()}</div>
+    </div>
+  `).join('');
+}
+
+function restartGame() {
+  showScreen('screenStart');
+  renderLeaderboard();
+}
+
+// Init
+renderLeaderboard();
+</script>
+</body>
+</html>

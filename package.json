@@ -1,0 +1,12 @@
+{
+  "name": "teq-references",
+  "version": "1.0.0",
+  "description": "TEQ Technologies Interactive References – BKALK3063",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

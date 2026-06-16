@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEQ Technologies – References</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0d0d0d;
+      color: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 50%, #450a0a 100%);
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+    .logo-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: #b91c1c;
+      letter-spacing: -1px;
+      flex-shrink: 0;
+      border: 3px solid rgba(255,255,255,0.4);
+    }
+    .hero h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .hero .sub {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.75);
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 1.2rem;
+    }
+    .badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 1.5rem 1.2rem 0.8rem;
+      justify-content: center;
+    }
+    .btn-filter {
+      background: #1a1a1a;
+      border: 1.5px solid #3f3f3f;
+      color: #ccc;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.18s;
+    }
+    .btn-filter:hover { border-color: #ef4444; color: #ef4444; }
+    .btn-filter.active {
+      background: #b91c1c;
+      border-color: #b91c1c;
+      color: #fff;
+    }
+
+    .search-wrap {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 1.2rem 1rem;
+    }
+    .search-wrap input {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1.5px solid #3f3f3f;
+      color: #f5f5f5;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .search-wrap input:focus { border-color: #ef4444; }
+    .search-wrap input::placeholder { color: #666; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex;
+      gap: 1px;
+      background: #1a1a1a;
+      border-top: 1px solid #222;
+      border-bottom: 1px solid #222;
+    }
+    .stat-cell {
+      flex: 1;
+      text-align: center;
+      padding: 0.9rem 0.5rem;
+    }
+    .stat-cell .num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ef4444;
+    }
+    .stat-cell .lbl {
+      font-size: 0.7rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* ── Reference cards ── */
+    .refs-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0.8rem 1rem 2rem;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .ref-card {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 1.1rem 1.2rem;
+      margin-bottom: 10px;
+      transition: border-color 0.18s, transform 0.12s;
+      cursor: default;
+      position: relative;
+    }
+    .ref-card:hover {
+      border-color: #b91c1c;
+      transform: translateX(3px);
+    }
+    .ref-card .ref-num {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #b91c1c;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ref-card .ref-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #f5f5f5;
+      line-height: 1.4;
+      padding-right: 30px;
+      margin-bottom: 5px;
+    }
+    .ref-card .ref-authors {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-bottom: 4px;
+      font-style: italic;
+    }
+    .ref-card .ref-source {
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .ref-card .tag-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+      letter-spacing: 0.2px;
+    }
+    .tag-vc    { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
+    .tag-dcf   { background: #1c1917; color: #d97706; border: 1px solid #78350f; }
+    .tag-india { background: #0c1a2e; color: #60a5fa; border: 1px solid #1e3a5f; }
+    .tag-val   { background: #0d2318; color: #4ade80; border: 1px solid #14532d; }
+    .tag-mkt   { background: #1e1427; color: #c084fc; border: 1px solid #4c1d95; }
+
+    .ref-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #ef4444;
+      text-decoration: none;
+      font-weight: 600;
+      opacity: 0.85;
+      transition: opacity 0.15s;
+    }
+    .ref-link:hover { opacity: 1; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #555;
+      display: none;
+    }
+    .empty-state svg { margin-bottom: 1rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: #0a0a0a;
+      border-top: 1px solid #222;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.75rem;
+      color: #555;
+    }
+    footer span { color: #b91c1c; font-weight: 700; }
+
+    /* ── "Show All" toggle btn ── */
+    .toggle-all-wrap {
+      text-align: center;
+      margin: 0.3rem 0 0.8rem;
+    }
+    .btn-show-all {
+      background: #b91c1c;
+      color: #fff;
+      border: none;
+      padding: 10px 28px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: background 0.18s, transform 0.12s;
+    }
+    .btn-show-all:hover { background: #991b1b; transform: scale(1.03); }
+
+    @media (max-width: 480px) {
+      .hero { padding: 2rem 1rem 1.5rem; }
+      .refs-grid { padding: 0.5rem 0.6rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.2rem;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:100;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.75rem;color:#b91c1c;">TEQ</div>
+    <span style="font-weight:800;font-size:1rem;color:#fff;">TEQ Technologies</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a href="index.html" style="background:#b91c1c;border:1.5px solid #b91c1c;color:#fff;padding:6px 14px;border-radius:999px;font-size:0.78rem;font-weight:600;text-decoration:none;">📚 References</a>
+    <a href="game.html" style="background:#1e1e1e;border:1.5px solid #3f3f3f;color:#ccc;padding:6px 14px;border-radius:999px;font-size:0.78rem;font-weight:600;text-decoration:none;">🎮 VC Game</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="logo-row">
+    <div class="logo-circle">TEQ</div>
+    <div style="text-align:left">
+      <h1>TEQ Technologies</h1>
+      <div class="sub">BKALK3063 Integrated Case Study · References</div>
+    </div>
+  </div>
+  <div class="badge-row">
+    <span class="badge">Venture Capital</span>
+    <span class="badge">DCF Valuation</span>
+    <span class="badge">Indian IT Startup</span>
+    <span class="badge">UUM · 2026</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-cell"><div class="num" id="stat-total">14</div><div class="lbl">References</div></div>
+  <div class="stat-cell"><div class="num">5</div><div class="lbl">Categories</div></div>
+  <div class="stat-cell"><div class="num">2024</div><div class="lbl">Latest Year</div></div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <button class="btn-filter active" data-filter="all">All</button>
+  <button class="btn-filter" data-filter="vc">Venture Capital</button>
+  <button class="btn-filter" data-filter="dcf">DCF / Valuation</button>
+  <button class="btn-filter" data-filter="india">India / Startup</button>
+  <button class="btn-filter" data-filter="mkt">Market / Strategy</button>
+</div>
+
+<div class="search-wrap">
+  <input type="text" id="searchBox" placeholder="🔍  Search by author, title or topic…" />
+</div>
+
+<div class="toggle-all-wrap">
+  <button class="btn-show-all" id="toggleBtn">Show All References ↓</button>
+</div>
+
+<!-- REFERENCE CARDS -->
+<div class="refs-grid" id="refsGrid">
+
+  <div class="ref-card" data-tags="vc val">
+    <div class="ref-num">1</div>
+    <div class="ref-title">Determinants of Venture Capital Funds' Investment Decisions in Early-Stage Startups</div>
+    <div class="ref-authors">Arias Gonzales, M.</div>
+    <div class="ref-source">Politecnico di Torino — An analysis of financial, strategic, and qualitative factors (WebThesis)</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="india vc">
+    <div class="ref-num">2</div>
+    <div class="ref-title">The Startup Environment and Funding Activity in India</div>
+    <div class="ref-authors">David, D., Gopalan, S., &amp; Ramachandran, S. (2021)</div>
+    <div class="ref-source">World Scientific Series in Finance, pp. 193–232</div>
+    <div class="tag-row">
+      <span class="tag tag-india">India</span>
+      <span class="tag tag-vc">Venture Capital</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="val dcf">
+    <div class="ref-num">3</div>
+    <div class="ref-title">Valuation of Early Stage High-tech Start-up Companies</div>
+    <div class="ref-authors">Festel, G.</div>
+    <div class="ref-source">International Journal of Business</div>
+    <div class="tag-row">
+      <span class="tag tag-val">Valuation</span>
+      <span class="tag tag-dcf">DCF</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc mkt">
+    <div class="ref-num">4</div>
+    <div class="ref-title">What Determines Venture Capital Investment Decisions? Evidence from the Emerging VC Market in Egypt</div>
+    <div class="ref-authors">Ismail, E. A., &amp; Medhat, M. I. (2019)</div>
+    <div class="ref-source">The Journal of Entrepreneurial Finance, Vol. 21</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-mkt">Market</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="india mkt">
+    <div class="ref-num">5</div>
+    <div class="ref-title">Indian Startup Ecosystem: Analysing Investment Concentration and Performance of Government Programmes</div>
+    <div class="ref-authors">Kamaluddin, F. A.</div>
+    <div class="ref-source">ISEC (Institute for Social and Economic Change)</div>
+    <div class="tag-row">
+      <span class="tag tag-india">India</span>
+      <span class="tag tag-mkt">Market</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="dcf val">
+    <div class="ref-num">6</div>
+    <div class="ref-title">Discounted Cash Flow (DCF) as a Measure of Startup Financial Success</div>
+    <div class="ref-authors">Laitinen, E. K. (2019)</div>
+    <div class="ref-source">Theoretical Economics Letters, Vol. 9, pp. 2997–3020</div>
+    <div class="tag-row">
+      <span class="tag tag-dcf">DCF</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc val">
+    <div class="ref-num">7</div>
+    <div class="ref-title">Startup Valuation by Venture Capitalists: An Empirical Study</div>
+    <div class="ref-authors">Miloud, T., Aspelund, A., &amp; Cabrol, M. (2012)</div>
+    <div class="ref-source">Venture Capital, Vol. 14(2-3), pp. 151–174</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="dcf val">
+    <div class="ref-num">8</div>
+    <div class="ref-title">The Validity of Company Valuation Using Discounted Cash Flow Methods</div>
+    <div class="ref-authors">Steiger, F. (2010)</div>
+    <div class="ref-source">arXiv Preprint [1003.4881]</div>
+    <div class="tag-row">
+      <span class="tag tag-dcf">DCF</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc val">
+    <div class="ref-num">9</div>
+    <div class="ref-title">Early-Stage Startup Valuations and Their Impact on Subsequent Investment Rounds</div>
+    <div class="ref-authors">Tenkula, O.</div>
+    <div class="ref-source">Osuva (University of Vaasa Publication Repository)</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc mkt">
+    <div class="ref-num">10</div>
+    <div class="ref-title">A Model of Venture Capitalist Investment Activity</div>
+    <div class="ref-authors">Tyebjee, T. T., &amp; Bruno, A. V. (1984)</div>
+    <div class="ref-source">Management Science</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-mkt">Strategy</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc val">
+    <div class="ref-num">11</div>
+    <div class="ref-title">Financial Contracting Theory Meets the Real World: An Empirical Analysis of Venture Capital Contracts</div>
+    <div class="ref-authors">Kaplan, S. N., &amp; Strömberg, P. (2003)</div>
+    <div class="ref-source">Review of Economic Studies (JSTOR)</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc val">
+    <div class="ref-num">12</div>
+    <div class="ref-title">Squaring Venture Capital Valuations with Reality</div>
+    <div class="ref-authors">Gornall, W., &amp; Strebulaev, I. A. (2020)</div>
+    <div class="ref-source">Journal of Financial Economics (ScienceDirect)</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc mkt">
+    <div class="ref-num">13</div>
+    <div class="ref-title">Venture Capitalists' Evaluations of Start-Up Teams: Trade-Offs, Knock-Out Criteria, and the Impact of VC Experience</div>
+    <div class="ref-authors">Franke, N., Gruber, M., Harhoff, D., &amp; Henkel, J. (2008)</div>
+    <div class="ref-source">Entrepreneurship Theory and Practice</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-mkt">Strategy</span>
+    </div>
+  </div>
+
+  <div class="ref-card" data-tags="vc mkt val">
+    <div class="ref-num">14</div>
+    <div class="ref-title">New Venture Strategy and Profitability: A Venture Capitalist's Assessment</div>
+    <div class="ref-authors">Shepherd, D. A., Ettenson, R., &amp; Crouch, A. (2000)</div>
+    <div class="ref-source">Journal of Business Venturing (ScienceDirect)</div>
+    <div class="tag-row">
+      <span class="tag tag-vc">Venture Capital</span>
+      <span class="tag tag-mkt">Strategy</span>
+      <span class="tag tag-val">Valuation</span>
+    </div>
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#444" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+    </svg>
+    <p style="font-size:0.95rem; color:#666;">No references matched your search.</p>
+    <p style="font-size:0.8rem; color:#444; margin-top:4px;">Try a different keyword or category.</p>
+  </div>
+</div>
+
+<footer>
+  <p><span>TEQ Technologies</span> · BKALK3063 Integrated Case Study · Universiti Utara Malaysia</p>
+  <p style="margin-top:4px;">Tunku Puteri Intan Safinaz School of Accountancy · 2026</p>
+</footer>
+
+<script>
+  const cards = Array.from(document.querySelectorAll('.ref-card'));
+  const searchBox = document.getElementById('searchBox');
+  const filterBtns = document.querySelectorAll('.btn-filter');
+  const emptyState = document.getElementById('emptyState');
+  const statTotal = document.getElementById('stat-total');
+  const toggleBtn = document.getElementById('toggleBtn');
+  const grid = document.getElementById('refsGrid');
+
+  let activeFilter = 'all';
+  let searchTerm = '';
+  let showAll = false;
+
+  const INITIAL_SHOW = 4;
+
+  function applyVisibility() {
+    let visible = 0;
+    cards.forEach((card, i) => {
+      const tags = card.dataset.tags || '';
+      const text = card.innerText.toLowerCase();
+      const matchFilter = activeFilter === 'all' || tags.includes(activeFilter);
+      const matchSearch = searchTerm === '' || text.includes(searchTerm);
+      const withinLimit = showAll || i < INITIAL_SHOW;
+      const shouldShow = matchFilter && matchSearch && withinLimit;
+      card.style.display = shouldShow ? 'block' : 'none';
+      if (matchFilter && matchSearch) visible++;
+    });
+    emptyState.style.display = visible === 0 ? 'block' : 'none';
+    statTotal.textContent = visible;
+
+    const totalMatching = cards.filter(c => {
+      const tags = c.dataset.tags || '';
+      const text = c.innerText.toLowerCase();
+      return (activeFilter === 'all' || tags.includes(activeFilter)) && (searchTerm === '' || text.includes(searchTerm));
+    }).length;
+
+    if (totalMatching <= INITIAL_SHOW) {
+      toggleBtn.style.display = 'none';
+    } else {
+      toggleBtn.style.display = 'inline-block';
+      toggleBtn.textContent = showAll
+        ? 'Show Less ↑'
+        : `Show All ${totalMatching} References ↓`;
+    }
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      showAll = false;
+      applyVisibility();
+    });
+  });
+
+  searchBox.addEventListener('input', () => {
+    searchTerm = searchBox.value.toLowerCase().trim();
+    showAll = true;
+    applyVisibility();
+  });
+
+  toggleBtn.addEventListener('click', () => {
+    showAll = !showAll;
+    applyVisibility();
+    if (!showAll) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  applyVisibility();
+</script>
+</body>
+</html>
