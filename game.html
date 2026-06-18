@@ -4,163 +4,347 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VC Tycoon – TEQ Technologies</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     :root{
-      --red:#b91c1c;--red-dark:#7f1d1d;--red-deep:#450a0a;
-      --green:#15803d;--green-light:#bbf7d0;
-      --amber:#b45309;--amber-light:#fef3c7;
-      --bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;
-      --border:#2a2a2a;--text:#f5f5f5;--muted:#888;
+      --red:#e11d48;--red-dark:#9f1239;--red-deep:#4c0519;
+      --red-glow:rgba(225,29,72,0.35);
+      --green:#10b981;--green-light:#d1fae5;
+      --amber:#f59e0b;--amber-light:#fef3c7;
+      --blue:#3b82f6;--purple:#8b5cf6;--pink:#ec4899;
+      --bg:#fff;--surface:#fef2f2;--surface2:#fff1f2;
+      --border:#fecdd3;--text:#1a0a0e;--muted:#9f1239;
+      --card-bg:#ffffff;
     }
-    body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
-    /* NAV */
-    .topnav{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.2rem;background:#111;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    /* ── STARFIELD BG ── */
+    .bg-pattern{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+    .bg-pattern::before{
+      content:'';position:absolute;inset:0;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(225,29,72,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(139,92,246,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 40%, rgba(236,72,153,0.05) 0%, transparent 40%);
+    }
+
+    /* ── NAV ── */
+    .topnav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0.8rem 1.4rem;
+      background:rgba(255,255,255,0.92);
+      backdrop-filter:blur(12px);
+      border-bottom:2px solid var(--border);
+      position:sticky;top:0;z-index:100;
+      box-shadow:0 2px 20px rgba(225,29,72,0.1);
+    }
     .topnav .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-    .logo-circle{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.75rem;color:var(--red);flex-shrink:0;}
-    .topnav .brand{font-weight:800;font-size:1rem;color:#fff;}
+    .logo-circle{
+      width:38px;height:38px;border-radius:50%;
+      background:linear-gradient(135deg,#e11d48,#9f1239);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:900;font-size:0.72rem;color:#fff;flex-shrink:0;
+      box-shadow:0 0 12px rgba(225,29,72,0.4);
+    }
+    .topnav .brand{font-weight:800;font-size:1rem;color:var(--red-dark);}
     .topnav .nav-links{display:flex;gap:8px;}
-    .nav-btn{background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:999px;cursor:pointer;font-size:0.78rem;font-weight:600;text-decoration:none;transition:all 0.15s;}
-    .nav-btn:hover{border-color:var(--red);color:var(--red);}
-    .nav-btn.active{background:var(--red);border-color:var(--red);color:#fff;}
+    .nav-btn{
+      background:#fff;border:2px solid var(--border);color:var(--muted);
+      padding:6px 14px;border-radius:999px;cursor:pointer;font-size:0.78rem;
+      font-weight:700;text-decoration:none;transition:all 0.15s;
+    }
+    .nav-btn:hover{border-color:var(--red);color:var(--red);background:#fff5f7;}
+    .nav-btn.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 12px var(--red-glow);}
 
-    /* HERO */
-    .game-hero{background:linear-gradient(135deg,#b91c1c 0%,#7f1d1d 50%,#450a0a 100%);padding:2rem 1.2rem 1.5rem;text-align:center;}
-    .game-hero h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:900;color:#fff;letter-spacing:-0.5px;}
-    .game-hero p{font-size:0.88rem;color:rgba(255,255,255,0.78);margin-top:6px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.55;}
+    /* ── HERO ── */
+    .game-hero{
+      background:linear-gradient(135deg,#e11d48 0%,#9f1239 45%,#4c0519 100%);
+      padding:2rem 1.2rem 1.8rem;text-align:center;position:relative;overflow:hidden;
+    }
+    .game-hero::before{
+      content:'💰💹📊🚀💎🔥⚡💼';
+      position:absolute;top:-10px;left:0;right:0;
+      font-size:2rem;letter-spacing:18px;opacity:0.12;
+      animation:scrollEmoji 12s linear infinite;white-space:nowrap;
+    }
+    @keyframes scrollEmoji{from{transform:translateX(100%);}to{transform:translateX(-100%);}}
+    .game-hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:800;color:#fff;letter-spacing:-1px;}
+    .game-hero p{font-size:0.88rem;color:rgba(255,255,255,0.85);margin-top:6px;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.55;}
     .hero-badges{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
-    .hbadge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:0.7rem;padding:3px 10px;border-radius:999px;font-weight:600;}
+    .hbadge{
+      background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);
+      color:#fff;font-size:0.7rem;padding:4px 12px;border-radius:999px;font-weight:700;
+      backdrop-filter:blur(4px);
+    }
 
-    /* SCREENS */
-    .screen{display:none;max-width:700px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+    /* ── SCREENS ── */
+    .screen{display:none;max-width:680px;margin:0 auto;padding:1.5rem 1rem 3rem;position:relative;z-index:1;}
     .screen.active{display:block;}
 
-    /* START SCREEN */
-    .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1.5rem;}
-    .mode-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1.3rem 1rem;cursor:pointer;text-align:center;transition:all 0.18s;}
-    .mode-card:hover{border-color:var(--red);transform:translateY(-2px);}
-    .mode-card.selected{border-color:var(--red);background:#1a0808;}
-    .mode-icon{font-size:2rem;margin-bottom:8px;}
-    .mode-title{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:4px;}
-    .mode-desc{font-size:0.75rem;color:var(--muted);line-height:1.45;}
-    .start-btn{display:block;width:100%;margin-top:1.5rem;background:var(--red);border:none;color:#fff;padding:14px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:background 0.15s,transform 0.12s;}
-    .start-btn:hover{background:#991b1b;transform:scale(1.02);}
-    .leaderboard-preview{margin-top:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-    .lb-header{background:var(--red-dark);padding:0.7rem 1rem;font-weight:700;font-size:0.85rem;display:flex;align-items:center;gap:6px;}
-    .lb-row{display:flex;align-items:center;gap:10px;padding:0.6rem 1rem;border-bottom:1px solid var(--border);font-size:0.82rem;}
+    /* ── START SCREEN ── */
+    .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1.2rem;}
+    .mode-card{
+      background:#fff;border:2.5px solid var(--border);border-radius:16px;
+      padding:1.3rem 1rem;cursor:pointer;text-align:center;
+      transition:all 0.18s;box-shadow:0 2px 12px rgba(0,0,0,0.04);
+    }
+    .mode-card:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 8px 24px var(--red-glow);}
+    .mode-card.selected{border-color:var(--red);background:#fff5f7;box-shadow:0 4px 20px var(--red-glow);}
+    .mode-icon{font-size:2.2rem;margin-bottom:8px;}
+    .mode-title{font-size:0.95rem;font-weight:800;color:var(--red-dark);margin-bottom:4px;}
+    .mode-desc{font-size:0.74rem;color:#6b7280;line-height:1.45;}
+    .start-btn{
+      display:block;width:100%;margin-top:1.5rem;
+      background:linear-gradient(135deg,#e11d48,#9f1239);
+      border:none;color:#fff;padding:15px;border-radius:14px;
+      font-size:1.05rem;font-weight:800;cursor:pointer;
+      letter-spacing:0.3px;transition:all 0.18s;
+      box-shadow:0 4px 20px var(--red-glow);
+    }
+    .start-btn:hover{transform:scale(1.02);box-shadow:0 6px 28px rgba(225,29,72,0.45);}
+
+    .leaderboard-preview{margin-top:1.5rem;background:#fff;border:2px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+    .lb-header{background:linear-gradient(90deg,#e11d48,#9f1239);padding:0.7rem 1rem;font-weight:800;font-size:0.85rem;color:#fff;display:flex;align-items:center;gap:6px;}
+    .lb-row{display:flex;align-items:center;gap:10px;padding:0.6rem 1rem;border-bottom:1px solid #fce7ea;font-size:0.82rem;}
     .lb-row:last-child{border-bottom:none;}
-    .lb-rank{font-weight:700;color:var(--red);width:20px;}
-    .lb-name{flex:1;color:#ddd;}
-    .lb-score{font-weight:700;color:#fff;}
-    .lb-badge-row{display:flex;gap:6px;}
+    .lb-rank{font-weight:800;color:var(--red);width:22px;}
+    .lb-name{flex:1;color:#374151;}
+    .lb-score{font-weight:800;color:var(--red-dark);}
 
-    /* GAME SCREEN */
+    /* ── GAME SCREEN ── */
     .hud{display:flex;gap:8px;margin-bottom:1.2rem;flex-wrap:wrap;}
-    .hud-cell{flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.8rem;text-align:center;}
-    .hud-cell .h-num{font-size:1.2rem;font-weight:800;color:var(--red);}
-    .hud-cell .h-lbl{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px;}
-    .hud-cell.green .h-num{color:#4ade80;}
-    .hud-cell.amber .h-num{color:#fbbf24;}
+    .hud-cell{
+      flex:1;min-width:72px;background:#fff;border:2px solid var(--border);
+      border-radius:12px;padding:0.6rem 0.8rem;text-align:center;
+      box-shadow:0 2px 8px rgba(0,0,0,0.04);
+    }
+    .hud-cell .h-num{font-size:1.15rem;font-weight:800;color:var(--red);}
+    .hud-cell .h-lbl{font-size:0.62rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;font-weight:600;}
+    .hud-cell.green .h-num{color:#10b981;}
+    .hud-cell.amber .h-num{color:#f59e0b;}
+    .hud-cell.urgent .h-num{color:#e11d48;animation:pulse 0.6s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
 
-    .progress-bar{height:4px;background:var(--border);border-radius:999px;margin-bottom:1.2rem;overflow:hidden;}
-    .progress-fill{height:100%;background:linear-gradient(90deg,var(--red),#ef4444);border-radius:999px;transition:width 0.4s;}
+    .progress-bar{height:6px;background:#fce7ea;border-radius:999px;margin-bottom:1.2rem;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#e11d48,#f59e0b);border-radius:999px;transition:width 0.5s ease;}
 
-    .startup-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.3rem;margin-bottom:1rem;}
-    .startup-header{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
-    .startup-logo{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;}
-    .startup-name{font-size:1.1rem;font-weight:800;color:#fff;}
-    .startup-tag{font-size:0.72rem;color:var(--muted);margin-top:2px;}
-    .pitch-text{font-size:0.85rem;color:#ccc;line-height:1.6;margin-bottom:1rem;background:var(--surface2);border-left:3px solid var(--red);padding:0.8rem 1rem;border-radius:0 8px 8px 0;font-style:italic;}
+    /* ── STARTUP CARD ── */
+    .startup-card{
+      background:#fff;border:2px solid var(--border);border-radius:18px;
+      padding:1.3rem;margin-bottom:1rem;
+      box-shadow:0 4px 20px rgba(225,29,72,0.08);
+      position:relative;overflow:hidden;
+    }
+    .startup-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,#e11d48,#f59e0b,#3b82f6,#8b5cf6);
+    }
+    .startup-header{display:flex;align-items:center;gap:12px;margin-bottom:0.9rem;}
+    .startup-logo{
+      width:52px;height:52px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:900;font-size:1.3rem;flex-shrink:0;
+      box-shadow:0 4px 12px rgba(0,0,0,0.12);
+    }
+    .startup-name{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text);}
+    .startup-tag{font-size:0.72rem;color:#6b7280;margin-top:2px;font-weight:600;}
 
-    .metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
-    .metric{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:0.65rem 0.5rem;text-align:center;}
-    .metric .m-val{font-size:0.95rem;font-weight:700;}
-    .metric .m-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.3px;}
-    .metric.good .m-val{color:#4ade80;}
-    .metric.bad .m-val{color:#f87171;}
-    .metric.neutral .m-val{color:#fbbf24;}
+    /* ── SHORT PITCH (new) ── */
+    .pitch-quick{
+      background:linear-gradient(135deg,#fff5f7,#fce7ea);
+      border-left:4px solid var(--red);
+      padding:0.75rem 1rem;border-radius:0 10px 10px 0;
+      margin-bottom:1rem;
+      font-size:0.88rem;color:var(--text);font-weight:600;
+      line-height:1.5;
+    }
+    .pitch-verdict{
+      display:flex;gap:8px;align-items:center;margin-bottom:0.9rem;flex-wrap:wrap;
+    }
+    .verdict-chip{
+      font-size:0.72rem;font-weight:700;padding:4px 12px;border-radius:999px;
+    }
+    .chip-green{background:#d1fae5;color:#065f46;border:1.5px solid #6ee7b7;}
+    .chip-red{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;}
+    .chip-amber{background:#fef3c7;color:#92400e;border:1.5px solid #fcd34d;}
+    .chip-blue{background:#dbeafe;color:#1e40af;border:1.5px solid #93c5fd;}
 
-    .risk-flags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;}
-    .risk-tag{font-size:0.7rem;padding:3px 10px;border-radius:999px;font-weight:600;}
-    .risk-high{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d;}
-    .risk-mid{background:#1c1917;color:#fcd34d;border:1px solid #78350f;}
-    .risk-low{background:#0d2318;color:#86efac;border:1px solid #14532d;}
+    .metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0.9rem;}
+    .metric{
+      background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;
+      padding:0.65rem 0.4rem;text-align:center;
+    }
+    .metric .m-val{font-size:0.92rem;font-weight:800;}
+    .metric .m-lbl{font-size:0.62rem;color:#6b7280;margin-top:2px;text-transform:uppercase;letter-spacing:0.3px;font-weight:600;}
+    .metric.good .m-val{color:#10b981;}
+    .metric.bad .m-val{color:#e11d48;}
+    .metric.neutral .m-val{color:#f59e0b;}
+    .metric.good{background:#f0fdf4;border-color:#6ee7b7;}
+    .metric.bad{background:#fff1f2;border-color:#fca5a5;}
+    .metric.neutral{background:#fffbeb;border-color:#fcd34d;}
 
-    .question-box{background:var(--surface2);border:1px solid #333;border-radius:12px;padding:1rem;margin-bottom:1rem;}
-    .question-box .q-label{font-size:0.7rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
-    .question-box .q-text{font-size:0.92rem;color:#eee;font-weight:600;line-height:1.45;}
+    .risk-flags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.5rem;}
+    .risk-tag{font-size:0.7rem;padding:3px 10px;border-radius:999px;font-weight:700;}
+    .risk-high{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+    .risk-mid{background:#fffbeb;color:#92400e;border:1px solid #fcd34d;}
+    .risk-low{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;}
 
+    /* ── QUESTION BOX ── */
+    .question-box{
+      background:linear-gradient(135deg,#fff5f7,#fce7ea);
+      border:2px solid #fecdd3;border-radius:14px;
+      padding:1rem 1.1rem;margin-bottom:1rem;
+    }
+    .question-box .q-label{font-size:0.7rem;color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
+    .question-box .q-text{font-size:0.95rem;color:var(--text);font-weight:700;line-height:1.45;}
+
+    /* ── TIMER URGENT UI ── */
+    .timer-ring{position:relative;width:52px;height:52px;flex-shrink:0;}
+    .timer-ring svg{transform:rotate(-90deg);}
+    .timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;color:var(--red);}
+    .timer-ring.urgent .timer-num{animation:pulse 0.5s infinite;}
+    .timer-ring.urgent circle:last-child{stroke:#e11d48;}
+
+    /* ── ACTION BUTTONS (colourful) ── */
     .action-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:0.5rem;}
-    .action-btn{border:none;border-radius:12px;padding:1rem 0.5rem;cursor:pointer;font-weight:700;font-size:0.82rem;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.18s;line-height:1.3;}
-    .action-btn .a-icon{font-size:1.3rem;}
-    .action-btn:hover{transform:translateY(-2px);}
-    .btn-invest{background:#15803d;color:#fff;}
-    .btn-invest:hover{background:#166534;}
-    .btn-staged{background:#b45309;color:#fff;}
-    .btn-staged:hover{background:#92400e;}
-    .btn-reject{background:#7f1d1d;color:#fff;}
-    .btn-reject:hover{background:#991b1b;}
-    .action-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+    .action-btn{
+      border:none;border-radius:14px;padding:1.1rem 0.5rem;
+      cursor:pointer;font-weight:800;font-size:0.82rem;
+      display:flex;flex-direction:column;align-items:center;gap:5px;
+      transition:all 0.18s;line-height:1.3;position:relative;overflow:hidden;
+    }
+    .action-btn::after{
+      content:'';position:absolute;inset:0;
+      background:rgba(255,255,255,0.15);opacity:0;transition:opacity 0.15s;
+    }
+    .action-btn:hover::after{opacity:1;}
+    .action-btn .a-icon{font-size:1.5rem;}
+    .action-btn:hover{transform:translateY(-3px);}
+    .action-btn:active{transform:scale(0.97);}
 
-    /* FEEDBACK */
-    .feedback-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+    .btn-invest{
+      background:linear-gradient(135deg,#10b981,#059669);color:#fff;
+      box-shadow:0 4px 16px rgba(16,185,129,0.35);
+    }
+    .btn-staged{
+      background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;
+      box-shadow:0 4px 16px rgba(245,158,11,0.35);
+    }
+    .btn-reject{
+      background:linear-gradient(135deg,#e11d48,#9f1239);color:#fff;
+      box-shadow:0 4px 16px rgba(225,29,72,0.35);
+    }
+    .action-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+    /* ── FEEDBACK OVERLAY ── */
+    .feedback-overlay{
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+      z-index:200;align-items:center;justify-content:center;padding:1rem;
+    }
     .feedback-overlay.show{display:flex;}
-    .feedback-box{background:var(--surface);border-radius:18px;padding:2rem 1.5rem;max-width:420px;width:100%;text-align:center;border:2px solid var(--border);animation:popIn 0.25s ease;}
-    @keyframes popIn{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
-    .fb-icon{font-size:3rem;margin-bottom:0.8rem;}
-    .fb-title{font-size:1.3rem;font-weight:800;margin-bottom:0.5rem;}
-    .fb-title.win{color:#4ade80;}
-    .fb-title.lose{color:#f87171;}
-    .fb-title.ok{color:#fbbf24;}
-    .fb-body{font-size:0.85rem;color:#bbb;line-height:1.6;margin-bottom:0.5rem;}
-    .fb-points{font-size:1.1rem;font-weight:700;margin:0.8rem 0;}
-    .fb-points.pos{color:#4ade80;}
-    .fb-points.neg{color:#f87171;}
-    .fb-next{background:var(--red);border:none;color:#fff;padding:11px 28px;border-radius:999px;font-weight:700;font-size:0.9rem;cursor:pointer;margin-top:0.5rem;transition:background 0.15s;}
-    .fb-next:hover{background:#991b1b;}
+    .feedback-box{
+      background:#fff;border-radius:22px;padding:2rem 1.5rem;
+      max-width:420px;width:100%;text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,0.2);
+      animation:popIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn{from{transform:scale(0.7) translateY(40px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+    .fb-icon{font-size:3.5rem;margin-bottom:0.8rem;}
+    .fb-title{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:0.5rem;}
+    .fb-title.win{color:#10b981;}
+    .fb-title.lose{color:#e11d48;}
+    .fb-title.ok{color:#f59e0b;}
+    .fb-body{font-size:0.83rem;color:#6b7280;line-height:1.6;margin-bottom:0.5rem;}
+    .fb-points{font-size:1.2rem;font-weight:800;margin:0.8rem 0;}
+    .fb-points.pos{color:#10b981;}
+    .fb-points.neg{color:#e11d48;}
+    .fb-next{
+      background:linear-gradient(135deg,#e11d48,#9f1239);
+      border:none;color:#fff;padding:12px 30px;
+      border-radius:999px;font-weight:800;font-size:0.9rem;
+      cursor:pointer;margin-top:0.5rem;
+      box-shadow:0 4px 16px var(--red-glow);
+      transition:all 0.18s;
+    }
+    .fb-next:hover{transform:scale(1.04);}
 
-    /* RESULTS SCREEN */
+    /* ── RESULTS ── */
     .result-hero{text-align:center;padding:1.5rem 0 1rem;}
-    .result-grade{font-size:4rem;margin-bottom:0.5rem;}
-    .result-title{font-size:1.6rem;font-weight:900;margin-bottom:6px;}
-    .result-sub{font-size:0.88rem;color:var(--muted);line-height:1.5;}
+    .result-grade{font-size:4.5rem;margin-bottom:0.5rem;}
+    .result-title{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:6px;color:var(--red-dark);}
+    .result-sub{font-size:0.88rem;color:#6b7280;line-height:1.5;}
     .result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.5rem 0;}
-    .rs-cell{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;}
-    .rs-cell .rs-num{font-size:1.5rem;font-weight:800;color:var(--red);}
-    .rs-cell.green .rs-num{color:#4ade80;}
-    .rs-cell.amber .rs-num{color:#fbbf24;}
-    .rs-cell .rs-lbl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:4px;}
-    .breakdown{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.2rem;}
-    .bd-header{background:var(--red-dark);padding:0.75rem 1rem;font-weight:700;font-size:0.85rem;}
-    .bd-row{display:flex;align-items:center;gap:10px;padding:0.7rem 1rem;border-bottom:1px solid var(--border);font-size:0.82rem;}
+    .rs-cell{background:#fff;border:2px solid var(--border);border-radius:14px;padding:1rem;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.04);}
+    .rs-cell .rs-num{font-size:1.6rem;font-weight:800;color:var(--red);}
+    .rs-cell.green .rs-num{color:#10b981;}
+    .rs-cell.amber .rs-num{color:#f59e0b;}
+    .rs-cell .rs-lbl{font-size:0.68rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;font-weight:600;}
+    .breakdown{background:#fff;border:2px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.2rem;box-shadow:0 2px 10px rgba(0,0,0,0.04);}
+    .bd-header{background:linear-gradient(90deg,#e11d48,#9f1239);padding:0.75rem 1rem;font-weight:800;font-size:0.85rem;color:#fff;}
+    .bd-row{display:flex;align-items:center;gap:10px;padding:0.7rem 1rem;border-bottom:1px solid #fce7ea;font-size:0.82rem;}
     .bd-row:last-child{border-bottom:none;}
-    .bd-company{flex:1;color:#ddd;}
-    .bd-decision{font-size:0.72rem;padding:2px 8px;border-radius:999px;font-weight:600;}
-    .bd-invest{background:#0d2318;color:#4ade80;border:1px solid #14532d;}
-    .bd-staged{background:#1c1917;color:#fbbf24;border:1px solid #78350f;}
-    .bd-reject{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d;}
-    .bd-pts{font-weight:700;min-width:50px;text-align:right;}
-    .bd-pts.pos{color:#4ade80;}
-    .bd-pts.neg{color:#f87171;}
+    .bd-company{flex:1;color:#374151;font-weight:600;}
+    .bd-decision{font-size:0.72rem;padding:3px 10px;border-radius:999px;font-weight:700;}
+    .bd-invest{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7;}
+    .bd-staged{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+    .bd-reject{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+    .bd-pts{font-weight:800;min-width:50px;text-align:right;}
+    .bd-pts.pos{color:#10b981;}
+    .bd-pts.neg{color:#e11d48;}
     .result-btns{display:flex;gap:10px;}
-    .result-btns button{flex:1;padding:12px;border-radius:12px;font-weight:700;font-size:0.88rem;cursor:pointer;border:none;transition:all 0.15s;}
-    .btn-replay{background:var(--red);color:#fff;}
-    .btn-replay:hover{background:#991b1b;}
-    .btn-refs{background:var(--surface2);border:1.5px solid var(--border);color:#ddd;}
+    .result-btns button{flex:1;padding:13px;border-radius:14px;font-weight:800;font-size:0.9rem;cursor:pointer;border:none;transition:all 0.18s;}
+    .btn-replay{background:linear-gradient(135deg,#e11d48,#9f1239);color:#fff;box-shadow:0 4px 16px var(--red-glow);}
+    .btn-replay:hover{transform:scale(1.02);}
+    .btn-refs{background:#fff;border:2px solid var(--border);color:var(--red-dark);}
     .btn-refs:hover{border-color:var(--red);color:var(--red);}
 
-    /* NAME INPUT */
-    .name-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;}
-    .name-section label{font-size:0.8rem;color:var(--muted);display:block;margin-bottom:6px;}
-    .name-section input{width:100%;background:var(--surface2);border:1.5px solid var(--border);color:#fff;padding:9px 12px;border-radius:9px;font-size:0.9rem;outline:none;}
+    /* ── NAME INPUT ── */
+    .name-section{background:#fff;border:2px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.2rem;}
+    .name-section label{font-size:0.8rem;color:#6b7280;display:block;margin-bottom:6px;font-weight:600;}
+    .name-section input{
+      width:100%;background:#f9fafb;border:2px solid #e5e7eb;
+      color:var(--text);padding:10px 13px;border-radius:10px;font-size:0.9rem;outline:none;
+      transition:border-color 0.18s;
+    }
     .name-section input:focus{border-color:var(--red);}
-    .save-score-btn{width:100%;margin-top:10px;background:var(--surface2);border:1.5px solid var(--border);color:#ccc;padding:9px;border-radius:9px;font-weight:600;font-size:0.82rem;cursor:pointer;transition:all 0.15s;}
-    .save-score-btn:hover{border-color:var(--red);color:var(--red);}
+    .save-score-btn{
+      width:100%;margin-top:10px;
+      background:linear-gradient(135deg,#e11d48,#9f1239);
+      border:none;color:#fff;padding:10px;border-radius:10px;
+      font-weight:700;font-size:0.85rem;cursor:pointer;
+      box-shadow:0 3px 12px var(--red-glow);transition:all 0.15s;
+    }
+    .save-score-btn:hover{transform:scale(1.02);}
 
-    .timer-ring{position:relative;width:50px;height:50px;flex-shrink:0;}
-    .timer-ring svg{transform:rotate(-90deg);}
-    .timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;color:var(--red);}
+    /* ── SOUND TOGGLE ── */
+    .sound-toggle{
+      position:fixed;bottom:1.2rem;right:1.2rem;z-index:300;
+      background:#fff;border:2px solid var(--border);border-radius:50%;
+      width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+      font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.12);
+      transition:all 0.18s;
+    }
+    .sound-toggle:hover{transform:scale(1.1);border-color:var(--red);}
+
+    /* ── CONFETTI ── */
+    .confetti-piece{
+      position:fixed;width:10px;height:10px;border-radius:2px;
+      pointer-events:none;z-index:400;
+      animation:confettiFall 1.2s ease-in forwards;
+    }
+    @keyframes confettiFall{
+      0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+      100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+    }
+
+    /* ── SECTION HEADING ── */
+    .section-heading{
+      font-size:1rem;font-weight:800;color:var(--red-dark);margin-bottom:0.4rem;
+      display:flex;align-items:center;gap:8px;
+    }
+    .section-heading::after{content:'';flex:1;height:2px;background:var(--border);}
 
     @media(max-width:480px){
       .mode-grid{grid-template-columns:1fr;}
@@ -171,6 +355,9 @@
   </style>
 </head>
 <body>
+
+<div class="bg-pattern"></div>
+<button class="sound-toggle" id="soundToggle" title="Toggle sound">🔊</button>
 
 <!-- NAV -->
 <nav class="topnav">
@@ -187,46 +374,46 @@
 <!-- HERO -->
 <div class="game-hero">
   <h1>🎯 VC Investment Tycoon</h1>
-  <p>You are Girish Chhabria. Analyse 6 Indian IT startups, make smart investment calls, and grow your VC portfolio.</p>
+  <p>Anda adalah Girish Chhabria. Analisa 6 startup IT India — masa terhad, tekanan tinggi. Buat keputusan yang tepat!</p>
   <div class="hero-badges">
-    <span class="hbadge">DCF Valuation</span>
-    <span class="hbadge">Risk Analysis</span>
-    <span class="hbadge">EV/Sales Multiples</span>
-    <span class="hbadge">Timed Decisions</span>
+    <span class="hbadge">⏱️ Timer Mode</span>
+    <span class="hbadge">🔊 Sound Effects</span>
+    <span class="hbadge">📊 DCF Valuation</span>
+    <span class="hbadge">🏆 Leaderboard</span>
   </div>
 </div>
 
 <!-- START SCREEN -->
 <div class="screen active" id="screenStart">
-  <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.3rem;">Choose Difficulty</h2>
-  <p style="font-size:0.8rem;color:#888;margin-bottom:0.5rem;">Higher difficulty = less time per decision + harder startups</p>
+  <div class="section-heading">🎮 Pilih Tahap Kesukaran</div>
+  <p style="font-size:0.8rem;color:#9ca3af;margin-bottom:0.5rem;">Lebih susah = masa lebih sedikit + data lebih mengelirukan</p>
   <div class="mode-grid">
     <div class="mode-card selected" data-mode="easy" onclick="selectMode('easy',this)">
       <div class="mode-icon">🌱</div>
       <div class="mode-title">Analyst</div>
-      <div class="mode-desc">45 sec per startup · Clear signals · Perfect for beginners</div>
+      <div class="mode-desc">45 saat · Isyarat jelas · Sesuai untuk pemula</div>
     </div>
     <div class="mode-card" data-mode="medium" onclick="selectMode('medium',this)">
       <div class="mode-icon">📊</div>
       <div class="mode-title">Associate</div>
-      <div class="mode-desc">30 sec per startup · Mixed signals · Moderate challenge</div>
+      <div class="mode-desc">30 saat · Isyarat bercampur · Cabaran sederhana</div>
     </div>
     <div class="mode-card" data-mode="hard" onclick="selectMode('hard',this)">
       <div class="mode-icon">🔥</div>
       <div class="mode-title">Partner</div>
-      <div class="mode-desc">15 sec per startup · Deceptive data · Expert only</div>
+      <div class="mode-desc">15 saat · Data mengelirukan · Pakar sahaja</div>
     </div>
     <div class="mode-card" data-mode="tycoon" onclick="selectMode('tycoon',this)">
       <div class="mode-icon">💎</div>
       <div class="mode-title">Tycoon</div>
-      <div class="mode-desc">10 sec · All curveballs · Legendary difficulty</div>
+      <div class="mode-desc">10 saat · Semua curveball · Legendari!</div>
     </div>
   </div>
-  <button class="start-btn" onclick="startGame()">🚀 Start Investment Round</button>
+  <button class="start-btn" onclick="startGame()">🚀 Mulakan Pusingan Pelaburan</button>
 
-  <div class="leaderboard-preview">
-    <div class="lb-header">🏆 &nbsp;Leaderboard – Top Investors</div>
-    <div id="lbRows"><div class="lb-row" style="color:#666;font-size:0.8rem;padding:1rem;">No scores yet — be the first!</div></div>
+  <div class="leaderboard-preview" style="margin-top:1.5rem;">
+    <div class="lb-header">🏆 &nbsp;Papan Pendahulu – Pelabur Terbaik</div>
+    <div id="lbRows"><div class="lb-row" style="color:#9ca3af;font-size:0.8rem;padding:1rem;">Tiada skor lagi — jadilah yang pertama!</div></div>
   </div>
 </div>
 
@@ -235,28 +422,28 @@
   <div class="hud">
     <div class="hud-cell">
       <div class="h-num" id="hudRound">1/6</div>
-      <div class="h-lbl">Round</div>
+      <div class="h-lbl">Pusingan</div>
     </div>
     <div class="hud-cell green">
       <div class="h-num" id="hudScore">0</div>
-      <div class="h-lbl">Score</div>
+      <div class="h-lbl">Markah</div>
     </div>
     <div class="hud-cell amber">
       <div class="h-num" id="hudFund">₹600M</div>
-      <div class="h-lbl">Fund Left</div>
+      <div class="h-lbl">Dana</div>
     </div>
-    <div class="hud-cell">
+    <div class="hud-cell" id="timerCell">
       <div style="display:flex;justify-content:center;">
-        <div class="timer-ring">
-          <svg width="50" height="50" viewBox="0 0 50 50">
-            <circle cx="25" cy="25" r="20" fill="none" stroke="#2a2a2a" stroke-width="4"/>
-            <circle id="timerCircle" cx="25" cy="25" r="20" fill="none" stroke="#b91c1c" stroke-width="4"
-              stroke-dasharray="125.6" stroke-dashoffset="0" stroke-linecap="round"/>
+        <div class="timer-ring" id="timerRing">
+          <svg width="52" height="52" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="21" fill="none" stroke="#fce7ea" stroke-width="5"/>
+            <circle id="timerCircle" cx="26" cy="26" r="21" fill="none" stroke="#e11d48" stroke-width="5"
+              stroke-dasharray="131.9" stroke-dashoffset="0" stroke-linecap="round"/>
           </svg>
           <div class="timer-num" id="timerNum">30</div>
         </div>
       </div>
-      <div class="h-lbl">Timer</div>
+      <div class="h-lbl">Masa</div>
     </div>
   </div>
 
@@ -270,25 +457,35 @@
         <div class="startup-tag" id="startupTag"></div>
       </div>
     </div>
-    <div class="pitch-text" id="pitchText"></div>
+
+    <!-- SHORT PITCH — sekali lalu baca -->
+    <div class="pitch-quick" id="pitchQuick"></div>
+    <div class="pitch-verdict" id="pitchVerdict"></div>
+
     <div class="metrics-grid" id="metricsGrid"></div>
     <div class="risk-flags" id="riskFlags"></div>
   </div>
 
   <div class="question-box">
-    <div class="q-label">💼 VC Decision</div>
-    <div class="q-text" id="questionText">How much will you invest in this startup?</div>
+    <div class="q-label">💼 Keputusan VC Anda</div>
+    <div class="q-text" id="questionText">Berapa banyak yang anda mahu laburkan dalam startup ini?</div>
   </div>
 
   <div class="action-row">
     <button class="action-btn btn-invest" onclick="decide('invest')" id="btnInvest">
-      <span class="a-icon">💰</span>Full Invest<br><small style="font-weight:400;font-size:0.7rem;">INR 30M</small>
+      <span class="a-icon">💰</span>
+      <span>Labur Penuh</span>
+      <small style="font-weight:600;font-size:0.7rem;opacity:0.85;">INR 30M</small>
     </button>
     <button class="action-btn btn-staged" onclick="decide('staged')" id="btnStaged">
-      <span class="a-icon">📋</span>Staged<br><small style="font-weight:400;font-size:0.7rem;">Milestones</small>
+      <span class="a-icon">📋</span>
+      <span>Berperingkat</span>
+      <small style="font-weight:600;font-size:0.7rem;opacity:0.85;">Milestone</small>
     </button>
     <button class="action-btn btn-reject" onclick="decide('reject')" id="btnReject">
-      <span class="a-icon">❌</span>Reject<br><small style="font-weight:400;font-size:0.7rem;">Pass</small>
+      <span class="a-icon">❌</span>
+      <span>Tolak</span>
+      <small style="font-weight:600;font-size:0.7rem;opacity:0.85;">Lepaskan</small>
     </button>
   </div>
 </div>
@@ -297,26 +494,26 @@
 <div class="screen" id="screenResult">
   <div class="result-hero">
     <div class="result-grade" id="resultGrade">🏆</div>
-    <div class="result-title" id="resultTitle">Investment Round Complete</div>
+    <div class="result-title" id="resultTitle">Pusingan Pelaburan Selesai!</div>
     <div class="result-sub" id="resultSub"></div>
   </div>
   <div class="result-stats">
-    <div class="rs-cell green"><div class="rs-num" id="rsFinalScore">0</div><div class="rs-lbl">Final Score</div></div>
-    <div class="rs-cell"><div class="rs-num" id="rsCorrect">0/6</div><div class="rs-lbl">Correct Calls</div></div>
-    <div class="rs-cell amber"><div class="rs-num" id="rsReturn">0%</div><div class="rs-lbl">Portfolio Return</div></div>
+    <div class="rs-cell green"><div class="rs-num" id="rsFinalScore">0</div><div class="rs-lbl">Skor Akhir</div></div>
+    <div class="rs-cell"><div class="rs-num" id="rsCorrect">0/6</div><div class="rs-lbl">Keputusan Betul</div></div>
+    <div class="rs-cell amber"><div class="rs-num" id="rsReturn">0%</div><div class="rs-lbl">Pulangan Portfolio</div></div>
   </div>
   <div class="breakdown">
-    <div class="bd-header">📋 &nbsp;Decision Breakdown</div>
+    <div class="bd-header">📋 &nbsp;Ringkasan Keputusan</div>
     <div id="breakdownRows"></div>
   </div>
   <div class="name-section">
-    <label>Enter your name for the leaderboard</label>
-    <input type="text" id="playerName" placeholder="e.g. Ahmad Haziq" maxlength="20"/>
-    <button class="save-score-btn" onclick="saveScore()">💾 Save My Score</button>
+    <label>Masukkan nama anda untuk papan pendahulu</label>
+    <input type="text" id="playerName" placeholder="cth. Ahmad Haziq" maxlength="20"/>
+    <button class="save-score-btn" onclick="saveScore()">💾 Simpan Skor Saya</button>
   </div>
   <div class="result-btns">
-    <button class="btn-replay" onclick="restartGame()">🔄 Play Again</button>
-    <button class="btn-refs" onclick="window.location.href='index.html'">📚 View References</button>
+    <button class="btn-replay" onclick="restartGame()">🔄 Main Semula</button>
+    <button class="btn-refs" onclick="window.location.href='index.html'">📚 Lihat Rujukan</button>
   </div>
 </div>
 
@@ -324,43 +521,134 @@
 <div class="feedback-overlay" id="feedbackOverlay">
   <div class="feedback-box">
     <div class="fb-icon" id="fbIcon">🎉</div>
-    <div class="fb-title" id="fbTitle">Great Call!</div>
+    <div class="fb-title" id="fbTitle">Keputusan Tepat!</div>
     <div class="fb-body" id="fbBody"></div>
     <div class="fb-points" id="fbPoints">+150 pts</div>
-    <button class="fb-next" onclick="nextRound()">Next Startup →</button>
+    <button class="fb-next" onclick="nextRound()">Startup Seterusnya →</button>
   </div>
 </div>
 
 <script>
 // ════════════════════════════════
-//  STARTUP DATA – 6 companies
+//  AUDIO ENGINE (Web Audio API)
+// ════════════════════════════════
+let soundEnabled = true;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTone(freq, type, duration, volume=0.3, delay=0){
+  if(!soundEnabled) return;
+  try{
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.type = type; osc.frequency.value = freq;
+    const start = audioCtx.currentTime + delay;
+    gain.gain.setValueAtTime(volume, start);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+    osc.start(start); osc.stop(start + duration);
+  } catch(e){}
+}
+
+function playSuccess(){
+  playTone(523,  'sine', 0.12, 0.25, 0);
+  playTone(659,  'sine', 0.12, 0.25, 0.1);
+  playTone(784,  'sine', 0.15, 0.3,  0.2);
+  playTone(1046, 'sine', 0.18, 0.35, 0.32);
+}
+function playClose(){
+  playTone(440, 'sine', 0.12, 0.2, 0);
+  playTone(494, 'sine', 0.14, 0.2, 0.12);
+}
+function playFail(){
+  playTone(220, 'sawtooth', 0.18, 0.25, 0);
+  playTone(196, 'sawtooth', 0.18, 0.2,  0.15);
+  playTone(165, 'sawtooth', 0.15, 0.18, 0.28);
+}
+function playTimeout(){
+  playTone(150, 'square', 0.3, 0.4, 0);
+}
+function playTick(){
+  playTone(800, 'square', 0.04, 0.08);
+}
+function playUrgentTick(){
+  playTone(1000, 'square', 0.05, 0.12);
+}
+function playClick(){
+  playTone(600, 'sine', 0.08, 0.15);
+}
+function playStart(){
+  playTone(392, 'sine', 0.1, 0.2, 0);
+  playTone(494, 'sine', 0.1, 0.2, 0.1);
+  playTone(587, 'sine', 0.12, 0.25, 0.2);
+}
+
+document.getElementById('soundToggle').onclick = () => {
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundToggle').textContent = soundEnabled ? '🔊' : '🔇';
+  if(soundEnabled) playClick();
+};
+
+// ════════════════════════════════
+//  CONFETTI
+// ════════════════════════════════
+function launchConfetti(){
+  const colors = ['#e11d48','#10b981','#f59e0b','#3b82f6','#8b5cf6','#ec4899','#fff'];
+  for(let i=0;i<35;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${Math.random()*100}vw;
+      top:-10px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*10}px;
+      height:${6+Math.random()*10}px;
+      border-radius:${Math.random()>0.5?'50%':'3px'};
+      animation-duration:${0.8+Math.random()*1.2}s;
+      animation-delay:${Math.random()*0.4}s;
+    `;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 2500);
+  }
+}
+
+// ════════════════════════════════
+//  STARTUP DATA — SHORT PITCH
 // ════════════════════════════════
 const STARTUPS = [
   {
     name: "TEQ Technologies",
-    logo: "🔴", logoBg: "#450a0a", logoColor: "#fca5a5",
-    sector: "Accounting ERP · CRM · Cloud Services · Mumbai",
-    pitch: '"India\'s IT world is booming. TEQ has grabbed a spot in fast-growing SME accounting, CRM, and cloud — all with a 99% product attachment rate and 100% customer retention. Your INR 30M will ignite explosive growth."',
+    logo: "🔴", logoBg: "#fce7ea", logoColor: "#e11d48",
+    sector: "Accounting ERP · CRM · Cloud · Mumbai",
+    pitchShort: "Retention 100%, TAM ₹147B — tapi masih rugi di Tahun 1. Pertumbuhan ada, keuntungan belum.",
+    verdicts: [
+      {label:"✅ Retention 100%", cls:"chip-green"},
+      {label:"⚠️ Margin -2%", cls:"chip-red"},
+      {label:"📈 TAM Besar", cls:"chip-blue"},
+    ],
     metrics: [
       {label:"Revenue (Yr 1)", val:"₹300M", cls:"good"},
       {label:"Op. Margin", val:"-2%", cls:"bad"},
       {label:"Retention", val:"100%", cls:"good"},
       {label:"EV/Sales", val:"3.18x", cls:"neutral"},
-      {label:"Growth Proj.", val:"18% CAGR", cls:"good"},
+      {label:"Growth CAGR", val:"18%", cls:"good"},
       {label:"TAM (2026)", val:"₹147B", cls:"good"},
     ],
-    risks: ["High cust. acq. cost","Market maturity gap","Cash flow pressure"],
-    riskClass:["risk-mid","risk-high","risk-high"],
+    risks: ["Kos pemerolehan tinggi","Aliran tunai negatif","Jurang kematangan pasaran"],
+    riskClass:["risk-high","risk-high","risk-mid"],
     correct: "staged",
-    explanation: "TEQ has brilliant metrics — 100% retention, huge TAM — but is operating at a loss in Year 1. The VC approach (as per the case) recommends staged investment tied to milestones, e.g. profitability by T+3. Full investment is risky; rejection means missing a high-growth opportunity.",
+    explanation: "Metrik cemerlang tapi rugi di Tahun 1 — strategi terbaik ialah pelaburan berperingkat berdasarkan pencapaian milestone (contoh: untung pada T+3).",
     fundImpact: {"invest":-30,"staged":-15,"reject":0},
-    returnMultiple: {"invest":3.5,"staged":2.2,"reject":0},
   },
   {
     name: "CloudNova India",
-    logo: "☁️", logoBg: "#0c1a2e", logoColor: "#60a5fa",
+    logo: "☁️", logoBg: "#eff6ff", logoColor: "#3b82f6",
     sector: "Cloud Infrastructure · B2B SaaS · Bengaluru",
-    pitch: '"We provide government-compliant data localisation cloud services for Indian enterprises. Data sovereignty is now mandated — every Indian company MUST store data locally. We are the pick-and-shovel play."',
+    pitchShort: "Mandat kerajaan berpihak kepada mereka — tapi churn 18% & hutang tinggi membunuh peluang.",
+    verdicts: [
+      {label:"🏛️ Mandat Kerajaan", cls:"chip-blue"},
+      {label:"❌ Churn 18%", cls:"chip-red"},
+      {label:"⚠️ Hutang Tinggi", cls:"chip-amber"},
+    ],
     metrics: [
       {label:"Revenue", val:"₹180M", cls:"neutral"},
       {label:"Op. Margin", val:"8%", cls:"neutral"},
@@ -369,92 +657,107 @@ const STARTUPS = [
       {label:"ROCE", val:"12%", cls:"neutral"},
       {label:"Churn Rate", val:"18%", cls:"bad"},
     ],
-    risks: ["High debt load","Elevated churn","Intense AWS/Azure competition"],
+    risks: ["Beban hutang tinggi","Churn kritikal","Persaingan AWS/Azure"],
     riskClass:["risk-high","risk-high","risk-mid"],
     correct: "reject",
-    explanation: "Despite compelling government tailwinds, CloudNova has an 18% annual churn rate — a critical red flag for a SaaS business — and carries high debt. The cloud market is dominated by AWS, Azure, and GCP. Rejecting preserves capital for better opportunities.",
+    explanation: "Churn 18% adalah isyarat merah untuk perniagaan SaaS. Tambah hutang tinggi + saingan gergasi — modal lebih selamat disimpan untuk peluang lain.",
     fundImpact: {"invest":-30,"staged":-15,"reject":0},
-    returnMultiple: {"invest":0.6,"staged":0.8,"reject":0},
   },
   {
     name: "FinStack AI",
-    logo: "🤖", logoBg: "#1e1427", logoColor: "#c084fc",
-    sector: "AI-powered FinTech · SME Lending · Pune",
-    pitch: '"We use machine learning to score SME creditworthiness in 60 seconds, enabling instant micro-loans. 60 million Indian SMEs are underserved by banks. Our NPL ratio is below 2% — better than most PSU banks."',
+    logo: "🤖", logoBg: "#faf5ff", logoColor: "#8b5cf6",
+    sector: "AI FinTech · Pinjaman SME · Pune",
+    pitchShort: "Margin 22%, NPL di bawah 2% — hampir sempurna. SATU halangan: kelulusan RBI belum dapat.",
+    verdicts: [
+      {label:"✅ Margin 22%", cls:"chip-green"},
+      {label:"✅ NPL 1.8%", cls:"chip-green"},
+      {label:"🔴 RBI Pending", cls:"chip-red"},
+    ],
     metrics: [
       {label:"Revenue", val:"₹85M", cls:"neutral"},
       {label:"Op. Margin", val:"22%", cls:"good"},
       {label:"NPL Ratio", val:"1.8%", cls:"good"},
       {label:"Loan Book", val:"₹500M", cls:"good"},
-      {label:"Founder Exp.", val:"12 yrs", cls:"good"},
-      {label:"Regulatory", val:"Pending RBI", cls:"bad"},
+      {label:"Pengalaman Pengasas", val:"12 tahun", cls:"good"},
+      {label:"Regulatori", val:"RBI Pending", cls:"bad"},
     ],
-    risks: ["RBI approval pending","Regulatory uncertainty","New RBI FinTech policy risk"],
+    risks: ["Lesen RBI belum lulus","Ketidaktentuan regulatori","Risiko polisi FinTech baru"],
     riskClass:["risk-high","risk-high","risk-mid"],
     correct: "staged",
-    explanation: "Excellent fundamentals — high margins, low NPL, experienced founder. However, the pending RBI license is a deal-breaker for full investment. Staged funding (first tranche now, second tranche upon RBI approval) manages regulatory risk while securing a position in a high-growth opportunity.",
+    explanation: "Asas kewangan terbaik dalam lot ini. Tetapi pelaburan penuh sebelum lesen RBI diluluskan adalah terlalu berisiko — gunakan struktur berperingkat untuk lindungi risiko regulatori.",
     fundImpact: {"invest":-30,"staged":-15,"reject":0},
-    returnMultiple: {"invest":4.0,"staged":3.5,"reject":0},
   },
   {
     name: "AgriSense Technologies",
-    logo: "🌾", logoBg: "#0d2318", logoColor: "#4ade80",
-    sector: "AgriTech · IoT Crop Monitoring · Hyderabad",
-    pitch: '"IoT sensors + satellite data + AI tell farmers exactly when to water, fertilise, and harvest. We\'ve proven 40% yield improvement across 12,000 farms. India has 140M farmers — we\'ve barely scratched the surface."',
+    logo: "🌾", logoBg: "#f0fdf4", logoColor: "#10b981",
+    sector: "AgriTech · IoT Pemantauan Tanaman · Hyderabad",
+    pitchShort: "Impak sosial luar biasa — tapi bakaran ₹8M/bulan dengan margin -35% dan tiada jalan ke untung.",
+    verdicts: [
+      {label:"✅ 40% Hasil Meningkat", cls:"chip-green"},
+      {label:"🔴 Bakaran ₹8M/bln", cls:"chip-red"},
+      {label:"❌ Margin -35%", cls:"chip-red"},
+    ],
     metrics: [
       {label:"Revenue", val:"₹45M", cls:"bad"},
       {label:"Op. Margin", val:"-35%", cls:"bad"},
-      {label:"Farms Active", val:"12,000", cls:"neutral"},
-      {label:"Sales/Capital", val:"0.4x", cls:"bad"},
-      {label:"Burn Rate", val:"₹8M/mo", cls:"bad"},
+      {label:"Ladang Aktif", val:"12,000", cls:"neutral"},
+      {label:"Sales/Modal", val:"0.4x", cls:"bad"},
+      {label:"Kadar Bakaran", val:"₹8M/bln", cls:"bad"},
       {label:"Churn", val:"6%", cls:"good"},
     ],
-    risks: ["Extremely capital intensive","Very high burn rate","No path to profit visible","Hardware dependency"],
+    risks: ["Sangat memerlukan modal","Kadar bakaran melampau","Tiada jalan ke untung","Kebergantungan perkakasan"],
     riskClass:["risk-high","risk-high","risk-high","risk-mid"],
     correct: "reject",
-    explanation: "While the social impact is compelling, AgriSense is burning ₹8M per month with a -35% operating margin and a sales-to-capital ratio of only 0.4x (industry benchmark is ~2x). This is not a capital-light business. Reject and preserve your fund for scalable opportunities.",
+    explanation: "Impak sosial besar tapi modal-intensif melampau. Nisbah jualan-modal 0.4x (penanda aras industri ~2x). Modal VC lebih baik digunakan untuk peluang berskala tinggi.",
     fundImpact: {"invest":-30,"staged":-15,"reject":0},
-    returnMultiple: {"invest":0.3,"staged":0.5,"reject":0},
   },
   {
     name: "MediTrack ERP",
-    logo: "🏥", logoBg: "#1c1917", logoColor: "#fcd34d",
-    sector: "Healthcare IT · Hospital Management ERP · Chennai",
-    pitch: '"Every hospital in India still runs on Excel and paper. We offer an all-in-one ERP — billing, OPD, IPD, inventory, pharmacy. 200 hospitals signed up in 18 months. Recurring SaaS revenue. Zero debt. Profitable."',
+    logo: "🏥", logoBg: "#fffbeb", logoColor: "#f59e0b",
+    sector: "Healthcare IT · ERP Hospital · Chennai",
+    pitchShort: "Untung, ZERO hutang, 200+ hospital, ROCE 24% — hampir semua kotak ditanda. Valuasi sedikit mahal tapi berbaloi.",
+    verdicts: [
+      {label:"✅ Untung & Zero Hutang", cls:"chip-green"},
+      {label:"✅ 200+ Hospital", cls:"chip-green"},
+      {label:"⚠️ EV/Sales 5.2x", cls:"chip-amber"},
+    ],
     metrics: [
       {label:"Revenue", val:"₹220M", cls:"good"},
       {label:"Op. Margin", val:"19%", cls:"good"},
-      {label:"Hospitals", val:"200+", cls:"good"},
-      {label:"Debt", val:"₹0", cls:"good"},
+      {label:"Hospital", val:"200+", cls:"good"},
+      {label:"Hutang", val:"₹0", cls:"good"},
       {label:"ROCE", val:"24%", cls:"good"},
       {label:"EV/Sales", val:"5.2x", cls:"bad"},
     ],
-    risks: ["High valuation ask","NABH compliance complexity","Slow hospital procurement cycles"],
+    risks: ["Valuasi tinggi","Kerumitan pematuhan NABH","Kitaran perolehan hospital perlahan"],
     riskClass:["risk-high","risk-mid","risk-mid"],
     correct: "invest",
-    explanation: "MediTrack checks nearly every box in Girish's 9-point evaluation matrix: profitable, zero debt, 24% ROCE, recurring SaaS, 200+ customers, experienced sector. The 5.2x EV/Sales is steep but justified by the strong fundamentals. This is a full investment opportunity.",
+    explanation: "MediTrack menandakan hampir semua 9 kriteria penilaian Girish — untung, tiada hutang, ROCE 24%, SaaS berulang, 200+ pelanggan. Ini peluang pelaburan penuh yang kuat.",
     fundImpact: {"invest":-30,"staged":-15,"reject":0},
-    returnMultiple: {"invest":5.5,"staged":3.2,"reject":0},
   },
   {
     name: "RetailBot AI",
-    logo: "🛒", logoBg: "#3f1515", logoColor: "#fdba74",
-    sector: "Retail AI · Demand Forecasting · Mumbai",
-    pitch: '"Our AI reduces retail inventory wastage by 32%. We have pilots with 3 large D-Mart competitors. The Indian retail market is USD 900 billion. Even 1% market share = USD 9B opportunity. We need runway."',
+    logo: "🛒", logoBg: "#fff7ed", logoColor: "#f97316",
+    sector: "Retail AI · Ramalan Permintaan · Mumbai",
+    pitchShort: "TAM gergasi ₹75T tapi hanya pilot PoC, pengasas pertama kali, margin -80%, dan 18 bulan lagi ke hasil sebenar.",
+    verdicts: [
+      {label:"📊 TAM ₹75T", cls:"chip-blue"},
+      {label:"❌ Hanya Pilot PoC", cls:"chip-red"},
+      {label:"🔴 Pengasas Pertama", cls:"chip-red"},
+    ],
     metrics: [
       {label:"Revenue", val:"₹12M", cls:"bad"},
       {label:"Op. Margin", val:"-80%", cls:"bad"},
-      {label:"Pilots", val:"3 (PoC)", cls:"neutral"},
-      {label:"Founder Track", val:"1st startup", cls:"bad"},
+      {label:"Pilot", val:"3 (PoC)", cls:"neutral"},
+      {label:"Rekod Pengasas", val:"Pertama kali", cls:"bad"},
       {label:"TAM", val:"₹75T", cls:"good"},
-      {label:"Time to Rev.", val:"18+ months", cls:"bad"},
+      {label:"Masa ke Hasil", val:"18+ bulan", cls:"bad"},
     ],
-    risks: ["Pre-revenue stage","First-time founder","PoC not yet commercial","18+ months to revenue"],
+    risks: ["Pra-hasil","Pengasas pertama kali","PoC belum komersial","18+ bulan ke hasil"],
     riskClass:["risk-high","risk-high","risk-high","risk-high"],
     correct: "reject",
-    explanation: "Despite a massive TAM, RetailBot is pre-revenue with a first-time founder and all 4 risk flags in the red zone. Girish's philosophy requires demonstrated execution. This fits an angel/seed stage, not a VC growth round. Rejecting is the prudent call.",
+    explanation: "TAM besar tapi semua 4 bendera risiko berada di zon merah. Falsafah Girish memerlukan rekod pelaksanaan yang terbukti. Ini sesuai untuk peringkat angel/seed, bukan pusingan VC.",
     fundImpact: {"invest":-30,"staged":-15,"reject":0},
-    returnMultiple: {"invest":0.2,"staged":0.4,"reject":0},
   },
 ];
 
@@ -479,13 +782,14 @@ let shuffled = [];
 
 function selectMode(m, el) {
   mode = m;
+  playClick();
   document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
 }
 
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length-1; i > 0; i--) {
+  for(let i = a.length-1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i+1));
     [a[i],a[j]] = [a[j],a[i]];
   }
@@ -493,8 +797,10 @@ function shuffle(arr) {
 }
 
 function startGame() {
+  if(audioCtx.state === 'suspended') audioCtx.resume();
   currentRound = 0; score = 0; fund = 600; decisions = [];
   shuffled = shuffle(STARTUPS);
+  playStart();
   showScreen('screenGame');
   loadRound();
 }
@@ -522,7 +828,13 @@ function loadRound() {
   logo.style.color = s.logoColor;
   document.getElementById('startupName').textContent = s.name;
   document.getElementById('startupTag').textContent = s.sector;
-  document.getElementById('pitchText').textContent = s.pitch;
+  document.getElementById('pitchQuick').textContent = s.pitchShort;
+
+  // Verdict chips
+  const vDiv = document.getElementById('pitchVerdict');
+  vDiv.innerHTML = s.verdicts.map(v =>
+    `<span class="verdict-chip ${v.cls}">${v.label}</span>`
+  ).join('');
 
   // Metrics
   const mg = document.getElementById('metricsGrid');
@@ -533,13 +845,15 @@ function loadRound() {
   // Risks
   const rf = document.getElementById('riskFlags');
   rf.innerHTML = s.risks.map((r,i) =>
-    `<span class="risk-tag ${s.riskClass[i]}">${r}</span>`
+    `<span class="risk-tag ${s.riskClass[i]}">⚠ ${r}</span>`
   ).join('');
 
   // Enable buttons
   ['btnInvest','btnStaged','btnReject'].forEach(id => {
     document.getElementById(id).disabled = false;
   });
+  document.getElementById('timerRing').classList.remove('urgent');
+  document.getElementById('timerCell').classList.remove('urgent');
 
   // Timer
   clearInterval(timerInterval);
@@ -547,19 +861,30 @@ function loadRound() {
   timerInterval = setInterval(() => {
     timeLeft--;
     updateTimer(timeLeft, totalTime);
-    if (timeLeft <= 0) {
+    // Sound ticks
+    if(timeLeft <= 5 && timeLeft > 0) playUrgentTick();
+    else if(timeLeft % 10 === 0 && timeLeft > 0) playTick();
+    // Urgent visual
+    if(timeLeft <= 5) {
+      document.getElementById('timerRing').classList.add('urgent');
+      document.getElementById('timerCell').classList.add('urgent');
+    }
+    if(timeLeft <= 0) {
       clearInterval(timerInterval);
-      decide('reject', true); // auto-reject on timeout
+      decide('reject', true);
     }
   }, 1000);
 }
 
 function updateTimer(t, total) {
   document.getElementById('timerNum').textContent = t;
-  const circumference = 125.6;
+  const circumference = 131.9;
   const offset = circumference * (1 - t/total);
   document.getElementById('timerCircle').style.strokeDashoffset = offset;
-  document.getElementById('timerNum').style.color = t <= 5 ? '#f87171' : '#b91c1c';
+  // Colour shift red-orange as time runs out
+  const pct = t/total;
+  const stroke = pct > 0.5 ? '#e11d48' : pct > 0.25 ? '#f59e0b' : '#e11d48';
+  document.getElementById('timerCircle').style.stroke = stroke;
 }
 
 function decide(choice, timeout=false) {
@@ -573,35 +898,31 @@ function decide(choice, timeout=false) {
   const timeBonus = Math.floor(timeLeft * 2);
 
   let pts = 0, tier = '';
-  if (timeout) {
-    pts = -50; tier = 'timeout';
-  } else if (isCorrect) {
-    pts = 150 + timeBonus;
-    tier = 'correct';
-  } else if (
+  if(timeout) { pts = -50; tier = 'timeout'; }
+  else if(isCorrect) { pts = 150 + timeBonus; tier = 'correct'; }
+  else if(
     (choice === 'staged' && s.correct === 'invest') ||
     (choice === 'invest' && s.correct === 'staged')
-  ) {
-    pts = 40; tier = 'close';
-  } else {
-    pts = -80; tier = 'wrong';
-  }
+  ) { pts = 40; tier = 'close'; }
+  else { pts = -80; tier = 'wrong'; }
 
-  // Fund impact (simplified)
-  const impact = s.fundImpact[choice] || 0;
-  fund = Math.max(0, fund + impact);
+  fund = Math.max(0, fund + (s.fundImpact[choice] || 0));
   score += pts;
+  decisions.push({ startup:s, choice, correct:s.correct, pts, isCorrect });
 
-  decisions.push({ startup: s, choice, correct: s.correct, pts, isCorrect });
+  // Sound
+  if(timeout) playTimeout();
+  else if(tier === 'correct') { playSuccess(); launchConfetti(); }
+  else if(tier === 'close') playClose();
+  else playFail();
 
-  // Feedback
   showFeedback(tier, s, choice, pts, timeout);
 }
 
 function showFeedback(tier, s, choice, pts, timeout) {
   const overlay = document.getElementById('feedbackOverlay');
   const icons = { correct:'🎯', close:'👍', wrong:'💸', timeout:'⏰' };
-  const titles = { correct:'Smart Call!', close:'Close Enough!', wrong:'Wrong Call', timeout:'Time\'s Up!' };
+  const titles = { correct:'Keputusan Tepat!', close:'Hampir Betul!', wrong:'Keputusan Silap', timeout:'Masa Habis!' };
   const titleCls = { correct:'win', close:'ok', wrong:'lose', timeout:'lose' };
 
   document.getElementById('fbIcon').textContent = icons[tier];
@@ -610,21 +931,22 @@ function showFeedback(tier, s, choice, pts, timeout) {
   t.className = `fb-title ${titleCls[tier]}`;
 
   let body = `<strong>${s.name}</strong><br>`;
-  body += `You chose: <strong>${choice.toUpperCase()}</strong> · Correct: <strong>${s.correct.toUpperCase()}</strong><br><br>`;
+  body += `Pilihan anda: <strong>${choice.toUpperCase()}</strong> · Jawapan: <strong>${s.correct.toUpperCase()}</strong><br><br>`;
   body += s.explanation;
   document.getElementById('fbBody').innerHTML = body;
 
   const pp = document.getElementById('fbPoints');
-  pp.textContent = (pts >= 0 ? '+' : '') + pts + ' pts';
+  pp.textContent = (pts >= 0 ? '+' : '') + pts + ' markah';
   pp.className = `fb-points ${pts >= 0 ? 'pos' : 'neg'}`;
 
   overlay.classList.add('show');
 }
 
 function nextRound() {
+  playClick();
   document.getElementById('feedbackOverlay').classList.remove('show');
   currentRound++;
-  if (currentRound >= 6) {
+  if(currentRound >= 6) {
     showResults();
   } else {
     loadRound();
@@ -638,11 +960,13 @@ function showResults() {
   const correct = decisions.filter(d => d.isCorrect).length;
   const pct = Math.round((correct/6)*100);
 
-  let grade='🏆', title='Legendary Investor!', sub='You\'ve mastered the art of venture capital.';
-  if (pct < 34) { grade='😓'; title='Back to Business School'; sub='The portfolio took a hit. Study the case study again!'; }
-  else if (pct < 51) { grade='📉'; title='Risky Business'; sub='Some good calls, but the losses hurt. Keep learning.'; }
-  else if (pct < 67) { grade='📊'; title='Decent Analyst'; sub='Solid fundamentals. A bit more due diligence needed.'; }
-  else if (pct < 84) { grade='💼'; title='Sharp VC Associate'; sub='Great instincts! A few calls away from legendary.'; }
+  let grade='🏆', title='Pelabur Lagenda!', sub='Anda telah menguasai seni modal teroka.';
+  if(pct < 34) { grade='😓'; title='Balik Belajar Dulu!'; sub='Portfolio ambik pukul teruk. Baca semula kes kajian!'; }
+  else if(pct < 51) { grade='📉'; title='Perniagaan Berisiko'; sub='Ada keputusan baik, tapi kerugian sakit. Teruskan belajar.'; }
+  else if(pct < 67) { grade='📊'; title='Analis Yang Boleh'; sub='Asas kukuh. Perlu lebih due diligence.'; }
+  else if(pct < 84) { grade='💼'; title='Rakan VC Yang Tajam'; sub='Naluri bagus! Beberapa keputusan lagi ke tahap lagenda.'; }
+
+  if(pct >= 84) launchConfetti();
 
   document.getElementById('resultGrade').textContent = grade;
   document.getElementById('resultTitle').textContent = title;
@@ -653,12 +977,12 @@ function showResults() {
 
   const br = document.getElementById('breakdownRows');
   br.innerHTML = decisions.map(d => {
-    const cls = d.choice === 'invest' ? 'bd-invest' : d.choice === 'staged' ? 'bd-staged' : 'bd-reject';
+    const cls = d.choice==='invest' ? 'bd-invest' : d.choice==='staged' ? 'bd-staged' : 'bd-reject';
     const ptsCls = d.pts >= 0 ? 'pos' : 'neg';
     return `<div class="bd-row">
       <div class="bd-company">${d.startup.logo} ${d.startup.name}</div>
       <span class="bd-decision ${cls}">${d.choice}</span>
-      <div class="bd-pts ${ptsCls}">${d.pts >= 0?'+':''}${d.pts}</div>
+      <div class="bd-pts ${ptsCls}">${d.pts>=0?'+':''}${d.pts}</div>
     </div>`;
   }).join('');
 
@@ -667,10 +991,10 @@ function showResults() {
 }
 
 // ════════════════════════════════
-//  LEADERBOARD (localStorage)
+//  LEADERBOARD
 // ════════════════════════════════
 function saveScore() {
-  const name = document.getElementById('playerName').value.trim() || 'Anonymous';
+  const name = document.getElementById('playerName').value.trim() || 'Anon';
   const entry = { name, score: Math.max(0,score), mode: MODES[mode].label, date: new Date().toLocaleDateString('en-MY') };
   let lb = JSON.parse(localStorage.getItem('teq_lb') || '[]');
   lb.push(entry);
@@ -678,15 +1002,16 @@ function saveScore() {
   lb = lb.slice(0, 10);
   localStorage.setItem('teq_lb', JSON.stringify(lb));
   renderLeaderboard();
-  document.querySelector('.save-score-btn').textContent = '✅ Saved!';
+  document.querySelector('.save-score-btn').textContent = '✅ Skor Disimpan!';
+  playSuccess();
 }
 
 function renderLeaderboard() {
   let lb = JSON.parse(localStorage.getItem('teq_lb') || '[]');
   const lbRows = document.getElementById('lbRows');
-  if (!lbRows) return;
-  if (lb.length === 0) {
-    lbRows.innerHTML = '<div class="lb-row" style="color:#666;font-size:0.8rem;padding:1rem;">No scores yet — be the first!</div>';
+  if(!lbRows) return;
+  if(lb.length === 0) {
+    lbRows.innerHTML = '<div class="lb-row" style="color:#9ca3af;font-size:0.8rem;padding:1rem;">Tiada skor lagi — jadilah yang pertama!</div>';
     return;
   }
   const medals = ['🥇','🥈','🥉'];
@@ -694,13 +1019,14 @@ function renderLeaderboard() {
     <div class="lb-row">
       <div class="lb-rank">${medals[i] || (i+1)}</div>
       <div class="lb-name">${e.name}</div>
-      <div style="font-size:0.7rem;color:#666;margin-right:8px;">${e.mode}</div>
+      <div style="font-size:0.7rem;color:#9ca3af;margin-right:8px;">${e.mode}</div>
       <div class="lb-score">${e.score.toLocaleString()}</div>
     </div>
   `).join('');
 }
 
 function restartGame() {
+  playClick();
   showScreen('screenStart');
   renderLeaderboard();
 }
