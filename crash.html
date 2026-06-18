@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rocket Crash – TEQ Technologies</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --red:#ff2d6f;--red-dark:#e0115f;--red-deep:#ff7a3d;
+  --red-glow:rgba(255,45,111,0.4);
+  --green:#10b981;--amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;--pink:#ec4899;
+  --bg:#fffaf9;--border:#ffd6e3;--text:#1a0a0e;--muted:#e0115f;
+}
+body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+.bg-pattern{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-pattern::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(225,29,72,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(139,92,246,0.06) 0%, transparent 50%);
+}
+
+.topnav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.8rem 1.4rem;background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(12px);border-bottom:2px solid var(--border);
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(225,29,72,0.1);
+}
+.topnav .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-circle{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#ff2d6f,#ff7a3d);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:0.72rem;color:#fff;flex-shrink:0;
+  box-shadow:0 0 12px rgba(225,29,72,0.4);
+}
+.topnav .brand{font-weight:800;font-size:1rem;color:var(--red-dark);}
+.topnav .nav-links{display:flex;gap:8px;flex-wrap:wrap;}
+.nav-btn{
+  background:#fff;border:2px solid var(--border);color:var(--muted);
+  padding:6px 14px;border-radius:999px;cursor:pointer;font-size:0.78rem;
+  font-weight:700;text-decoration:none;transition:all 0.15s;
+}
+.nav-btn:hover{border-color:var(--red);color:var(--red);background:#fff5f7;}
+.nav-btn.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 12px var(--red-glow);}
+
+.game-hero{
+  background:linear-gradient(135deg,#1a1a4e 0%,#7c1d6f 45%,#ff2d6f 80%,#ff7a3d 100%);
+  padding:2rem 1.2rem 1.6rem;text-align:center;position:relative;overflow:hidden;
+}
+.game-hero::before{
+  content:'🚀💰🔥📈💎⚡🛰️🌙';position:absolute;top:-10px;left:0;right:0;
+  font-size:2rem;letter-spacing:18px;opacity:0.14;
+  animation:scrollEmoji 12s linear infinite;white-space:nowrap;
+}
+@keyframes scrollEmoji{from{transform:translateX(100%);}to{transform:translateX(-100%);}}
+.game-hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:800;color:#fff;letter-spacing:-1px;}
+.game-hero p{font-size:0.86rem;color:rgba(255,255,255,0.88);margin-top:6px;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.5;}
+.hero-badges{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.hbadge{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;font-size:0.7rem;padding:4px 12px;border-radius:999px;font-weight:700;backdrop-filter:blur(4px);}
+
+.screen{display:none;max-width:680px;margin:0 auto;padding:1.5rem 1rem 3rem;position:relative;z-index:1;}
+.screen.active{display:block;}
+
+/* ── START SCREEN ── */
+.rules-card{background:#fff;border:2px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.rules-card h3{font-size:0.95rem;color:var(--red-dark);font-weight:800;margin-bottom:0.7rem;}
+.rule-row{display:flex;gap:10px;padding:0.5rem 0.2rem;border-bottom:1px solid #fce7ea;font-size:0.82rem;align-items:flex-start;}
+.rule-row:last-child{border-bottom:none;}
+.rule-row .ri{font-size:1.1rem;flex-shrink:0;}
+.rule-row b{color:var(--red-dark);}
+.rules-note{font-size:0.76rem;color:#9ca3af;margin-top:0.7rem;line-height:1.5;}
+
+.start-btn{
+  display:block;width:100%;margin-top:0.5rem;
+  background:linear-gradient(135deg,#ff2d6f,#ff7a3d);
+  border:none;color:#fff;padding:15px;border-radius:14px;
+  font-size:1.05rem;font-weight:800;cursor:pointer;
+  letter-spacing:0.3px;transition:all 0.18s;box-shadow:0 4px 20px var(--red-glow);
+}
+.start-btn:hover{transform:scale(1.02);box-shadow:0 6px 28px rgba(225,29,72,0.45);}
+
+.leaderboard-preview{margin-top:1.5rem;background:#fff;border:2px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+.lb-header{background:linear-gradient(90deg,#ff2d6f,#ff7a3d);padding:0.7rem 1rem;font-weight:800;font-size:0.85rem;color:#fff;display:flex;align-items:center;gap:6px;}
+.lb-row{display:flex;align-items:center;gap:10px;padding:0.6rem 1rem;border-bottom:1px solid #fce7ea;font-size:0.82rem;}
+.lb-row:last-child{border-bottom:none;}
+.lb-rank{font-weight:800;color:var(--red);width:22px;}
+.lb-name{flex:1;color:#374151;}
+.lb-score{font-weight:800;color:var(--red-dark);}
+
+/* ── GAME SCREEN: HUD ── */
+.hud{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.hud-cell{flex:1;min-width:80px;background:#fff;border:2px solid var(--border);border-radius:12px;padding:0.6rem 0.8rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);transition:transform 0.15s;position:relative;}
+.hud-cell .h-num{font-size:1.1rem;font-weight:800;color:var(--red);transition:color 0.3s;}
+.hud-cell .h-lbl{font-size:0.6rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;font-weight:600;}
+.hud-cell.amber .h-num{color:#f59e0b;}
+.hud-cell.cash-main{flex:1.4;border-width:3px;}
+.hud-cell.cash-main .h-num{font-size:1.55rem;font-family:'Space Grotesk',sans-serif;}
+.hud-cell.cash-main .h-lbl{font-size:0.62rem;}
+.hud-cell.cash-main.low-cash{animation:lowCashPulse 0.9s infinite;border-color:var(--red);}
+@keyframes lowCashPulse{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,0.04);}50%{box-shadow:0 0 18px var(--red-glow);}}
+
+@keyframes cashPopWin{0%{transform:scale(1);}30%{transform:scale(1.18);}55%{transform:scale(0.96);}100%{transform:scale(1);}}
+@keyframes cashShakeLose{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px) rotate(-1deg);}40%{transform:translateX(6px) rotate(1deg);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+.hud-cell.cash-main.pop-win{animation:cashPopWin 0.55s ease;}
+.hud-cell.cash-main.pop-win .h-num{color:#10b981 !important;}
+.hud-cell.cash-main.pop-lose{animation:cashShakeLose 0.45s ease;}
+.hud-cell.cash-main.pop-lose .h-num{color:#ff2d6f !important;}
+
+.float-num{position:absolute;font-weight:900;font-size:1.1rem;font-family:'Space Grotesk',sans-serif;pointer-events:none;white-space:nowrap;z-index:50;animation:floatUp 1.1s ease-out forwards;}
+.float-num.pos{color:#10b981;}
+.float-num.neg{color:#ff2d6f;}
+@keyframes floatUp{0%{transform:translateY(0) scale(0.8);opacity:0;}15%{transform:translateY(-8px) scale(1.25);opacity:1;}80%{transform:translateY(-38px) scale(1);opacity:1;}100%{transform:translateY(-52px) scale(0.9);opacity:0;}}
+
+.goal-progress{margin-bottom:1rem;}
+.goal-labels{display:flex;justify-content:space-between;font-size:0.7rem;color:#9ca3af;font-weight:700;margin-bottom:4px;}
+.progress-bar{height:10px;background:#fce7ea;border-radius:999px;overflow:hidden;position:relative;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ff2d6f,#f59e0b,#10b981);border-radius:999px;transition:width 0.6s ease;}
+
+/* ── RECENT CRASH CHIPS ── */
+.crash-chips{display:flex;gap:6px;overflow-x:auto;padding:0.3rem 0.1rem 0.7rem;margin-bottom:0.3rem;scrollbar-width:thin;}
+.crash-chips::-webkit-scrollbar{height:4px;}
+.crash-chip{flex-shrink:0;padding:5px 11px;border-radius:999px;font-weight:800;font-size:0.76rem;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+.chip-low{background:#9ca3af;}
+.chip-mid{background:linear-gradient(135deg,#10b981,#059669);}
+.chip-high{background:linear-gradient(135deg,#f59e0b,#ff7a3d);}
+.chip-mega{background:linear-gradient(135deg,#8b5cf6,#ec4899);}
+.chip-empty{color:#9ca3af;font-size:0.78rem;padding:5px 4px;}
+
+/* ── ROCKET STAGE ── */
+.rocket-stage{
+  position:relative;height:280px;border-radius:18px;overflow:hidden;
+  margin-bottom:1rem;
+  background:linear-gradient(180deg,#0a0e2e 0%,#1a1a4e 35%,#4a1a5c 70%,#7c1d4f 100%);
+  border:3px solid var(--border);box-shadow:0 8px 28px rgba(0,0,0,0.25);
+  transition:box-shadow 0.2s;
+}
+.rocket-stage.danger{animation:dangerBorder 0.5s infinite;}
+@keyframes dangerBorder{0%,100%{box-shadow:0 8px 28px rgba(0,0,0,0.25), inset 0 0 0px rgba(255,45,111,0);}50%{box-shadow:0 8px 28px rgba(0,0,0,0.25), inset 0 0 40px rgba(255,45,111,0.55);}}
+.rocket-stage.shaking{animation:stageShake 0.4s;}
+@keyframes stageShake{
+  0%,100%{transform:translate(0,0);}
+  20%{transform:translate(-6px,3px) rotate(-0.6deg);}
+  40%{transform:translate(6px,-3px) rotate(0.6deg);}
+  60%{transform:translate(-5px,-2px);}
+  80%{transform:translate(5px,2px);}
+}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.2;}50%{opacity:1;}}
+.launch-pad{position:absolute;bottom:0;left:0;right:0;height:10px;background:linear-gradient(90deg,#1a1a1a,#3a3a3a,#1a1a1a);}
+.mult-display{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:2.5rem;
+  color:#34d399;text-shadow:0 0 22px rgba(52,211,153,0.6);z-index:6;
+  transition:color 0.2s;text-align:center;
+}
+.mult-display .ms-tag{display:block;font-size:0.62rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.mult-display.tier-amber{color:#fbbf24;text-shadow:0 0 22px rgba(251,191,36,0.6);}
+.mult-display.tier-red{color:#ff2d6f;text-shadow:0 0 26px rgba(255,45,111,0.75);animation:multShake 0.25s infinite;}
+@keyframes multShake{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.05);}}
+.mult-display.idle-txt{color:rgba(255,255,255,0.55);font-size:1.3rem;text-shadow:none;}
+
+.rocket-wrap{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:5;transition:bottom 0.05s linear;}
+.rocket-flame{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);width:14px;height:22px;border-radius:0 0 50% 50%;background:linear-gradient(180deg,#fff7ed,#fbbf24,#ff2d6f);filter:blur(2px);opacity:0.9;}
+.rocket-emoji{font-size:2.4rem;display:block;transform:rotate(-45deg);filter:drop-shadow(0 4px 10px rgba(0,0,0,0.4));position:relative;}
+.rocket-wrap.exploded .rocket-emoji{transform:scale(1.6) rotate(0deg);}
+.boom-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 65%, rgba(255,140,0,0.55) 0%, rgba(255,45,111,0.35) 35%, transparent 70%);opacity:0;pointer-events:none;z-index:7;transition:opacity 0.15s;}
+.boom-flash.show{opacity:1;}
+
+.heat-meter{margin-top:0.2rem;margin-bottom:1rem;}
+.heat-labels{display:flex;justify-content:space-between;font-size:0.68rem;color:#9ca3af;font-weight:700;margin-bottom:4px;}
+.heat-bar{height:8px;background:#fce7ea;border-radius:999px;overflow:hidden;}
+.heat-fill{height:100%;width:0%;background:linear-gradient(90deg,#10b981,#f59e0b,#ff2d6f);border-radius:999px;transition:width 0.1s linear;}
+
+/* ── BET / FLIGHT PANEL ── */
+.bet-panel{background:#fff;border:2px solid var(--border);border-radius:16px;padding:1.1rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.bet-panel h3{font-size:0.9rem;color:var(--red-dark);font-weight:800;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;}
+.single-bet-row{display:flex;align-items:center;gap:10px;padding:0.4rem 0.2rem;margin-bottom:0.6rem;}
+.single-bet-row .bet-icon{font-size:1.6rem;flex-shrink:0;}
+.bet-input-wrap{display:flex;align-items:center;gap:6px;flex:1;}
+.bet-input-wrap button{
+  width:34px;height:34px;border-radius:9px;border:2px solid var(--border);background:#fff;
+  font-weight:800;cursor:pointer;color:var(--red);font-size:1rem;transition:all 0.12s;
+}
+.bet-input-wrap button:hover{background:#fff5f7;border-color:var(--red);}
+.bet-input-wrap input{
+  flex:1;text-align:center;border:2px solid var(--border);border-radius:9px;
+  padding:8px 4px;font-weight:800;font-size:1rem;color:var(--text);outline:none;
+}
+.bet-input-wrap input:focus{border-color:var(--red);}
+.quick-btns{display:flex;gap:6px;margin-top:0.5rem;margin-bottom:0.7rem;}
+.quick-btn{
+  flex:1;background:#fff5f7;border:2px solid var(--border);color:var(--red-dark);
+  padding:7px;border-radius:8px;font-size:0.74rem;font-weight:700;cursor:pointer;transition:all 0.15s;
+}
+.quick-btn:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.launch-btn{
+  display:block;width:100%;background:linear-gradient(135deg,#ff2d6f,#ff7a3d);
+  border:none;color:#fff;padding:14px;border-radius:14px;font-size:1rem;font-weight:800;
+  cursor:pointer;box-shadow:0 4px 18px var(--red-glow);transition:all 0.18s;
+}
+.launch-btn:hover{transform:scale(1.02);}
+.launch-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.error-msg{color:var(--red);font-size:0.78rem;font-weight:700;text-align:center;margin-top:0.5rem;min-height:18px;}
+
+.flight-info{display:flex;justify-content:space-between;font-size:0.82rem;color:#6b7280;margin-bottom:0.8rem;font-weight:600;}
+.flight-info b{color:var(--red-dark);}
+.cashout-btn{
+  display:block;width:100%;padding:18px;border-radius:16px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:900;font-size:1.05rem;
+  box-shadow:0 4px 20px rgba(16,185,129,0.5);animation:cashoutPulse 1s infinite;transition:background 0.3s;
+}
+@keyframes cashoutPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.025);}}
+.cashout-btn.danger{background:linear-gradient(135deg,#ff2d6f,#e0115f);box-shadow:0 4px 24px rgba(255,45,111,0.6);animation:cashoutPulseFast 0.45s infinite;}
+@keyframes cashoutPulseFast{0%,100%{transform:scale(1);}50%{transform:scale(1.045);}}
+.cashout-btn:disabled{opacity:0.85;cursor:default;animation:none;background:linear-gradient(135deg,#9ca3af,#6b7280);}
+.flight-note{text-align:center;font-size:0.78rem;color:#9ca3af;margin-top:0.6rem;font-weight:600;min-height:16px;}
+
+/* ── RESULT POPUP ── */
+.feedback-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.feedback-overlay.show{display:flex;}
+.feedback-box{background:#fff;border-radius:22px;padding:2rem 1.5rem;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:popIn 0.28s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes popIn{from{transform:scale(0.7) translateY(40px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+.fb-icon{font-size:3.2rem;margin-bottom:0.6rem;}
+.fb-title{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:0.5rem;}
+.fb-title.win{color:#10b981;}
+.fb-title.lose{color:#ff2d6f;}
+.fb-result-color{font-size:0.85rem;font-weight:700;color:#6b7280;margin-bottom:0.6rem;}
+.fb-body{font-size:0.83rem;color:#6b7280;line-height:1.6;margin-bottom:0.3rem;}
+.fb-body .hot{color:var(--red);font-weight:800;}
+.fb-points{font-size:1.4rem;font-weight:800;margin:0.7rem 0;}
+.fb-points.pos{color:#10b981;}
+.fb-points.neg{color:#ff2d6f;}
+.fb-next{background:linear-gradient(135deg,#ff2d6f,#ff7a3d);border:none;color:#fff;padding:12px 30px;border-radius:999px;font-weight:800;font-size:0.9rem;cursor:pointer;margin-top:0.5rem;box-shadow:0 4px 16px var(--red-glow);transition:all 0.18s;}
+.fb-next:hover{transform:scale(1.04);}
+
+/* ── RESULTS (END GAME) ── */
+.result-hero{text-align:center;padding:1.5rem 0 1rem;}
+.result-grade{font-size:4.5rem;margin-bottom:0.5rem;}
+.result-title{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:6px;color:var(--red-dark);}
+.result-sub{font-size:0.88rem;color:#6b7280;line-height:1.5;}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:1.5rem 0;}
+.rs-cell{background:#fff;border:2px solid var(--border);border-radius:14px;padding:1rem;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.04);}
+.rs-cell .rs-num{font-size:1.4rem;font-weight:800;color:var(--red);}
+.rs-cell.green .rs-num{color:#10b981;}
+.rs-cell .rs-lbl{font-size:0.66rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;font-weight:600;}
+
+.history-list{background:#fff;border:2px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.2rem;box-shadow:0 2px 10px rgba(0,0,0,0.04);max-height:240px;overflow-y:auto;}
+.hist-header{background:linear-gradient(90deg,#ff2d6f,#ff7a3d);padding:0.75rem 1rem;font-weight:800;font-size:0.85rem;color:#fff;position:sticky;top:0;}
+.hist-row{display:flex;align-items:center;gap:10px;padding:0.6rem 1rem;border-bottom:1px solid #fce7ea;font-size:0.8rem;}
+.hist-row:last-child{border-bottom:none;}
+.hist-pts{font-weight:800;min-width:60px;text-align:right;}
+.hist-pts.pos{color:#10b981;}
+.hist-pts.neg{color:#ff2d6f;}
+
+.name-section{background:#fff;border:2px solid var(--border);border-radius:16px;padding:1.2rem;margin-bottom:1.2rem;}
+.name-section label{font-size:0.8rem;color:#6b7280;display:block;margin-bottom:6px;font-weight:600;}
+.name-section input{width:100%;background:#f9fafb;border:2px solid #e5e7eb;color:var(--text);padding:10px 13px;border-radius:10px;font-size:0.9rem;outline:none;transition:border-color 0.18s;}
+.name-section input:focus{border-color:var(--red);}
+.save-score-btn{width:100%;margin-top:10px;background:linear-gradient(135deg,#ff2d6f,#ff7a3d);border:none;color:#fff;padding:10px;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;box-shadow:0 3px 12px var(--red-glow);transition:all 0.15s;}
+.save-score-btn:hover{transform:scale(1.02);}
+
+.result-btns{display:flex;gap:10px;}
+.result-btns button{flex:1;padding:13px;border-radius:14px;font-weight:800;font-size:0.9rem;cursor:pointer;border:none;transition:all 0.18s;}
+.btn-replay{background:linear-gradient(135deg,#ff2d6f,#ff7a3d);color:#fff;box-shadow:0 4px 16px var(--red-glow);}
+.btn-replay:hover{transform:scale(1.02);}
+.btn-refs{background:#fff;border:2px solid var(--border);color:var(--red-dark);}
+.btn-refs:hover{border-color:var(--red);color:var(--red);}
+
+.sound-toggle{position:fixed;bottom:1.2rem;right:1.2rem;z-index:300;background:#fff;border:2px solid var(--border);border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:all 0.18s;}
+.sound-toggle:hover{transform:scale(1.1);border-color:var(--red);}
+
+.confetti-piece{position:fixed;width:10px;height:10px;border-radius:2px;pointer-events:none;z-index:400;animation:confettiFall 1.2s ease-in forwards;}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+
+.section-heading{font-size:1rem;font-weight:800;color:var(--red-dark);margin-bottom:0.4rem;display:flex;align-items:center;gap:8px;}
+.section-heading::after{content:'';flex:1;height:2px;background:var(--border);}
+
+@media(max-width:480px){
+  .result-stats{grid-template-columns:repeat(2,1fr);}
+  .rocket-stage{height:240px;}
+  .mult-display{font-size:2rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+<button class="sound-toggle" id="soundToggle" title="Toggle sound">🔊</button>
+
+<nav class="topnav">
+  <a href="index.html" class="logo">
+    <div class="logo-circle">TEQ</div>
+    <span class="brand">TEQ Technologies</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-btn">📚 References</a>
+    <a href="game.html" class="nav-btn">🎰 Wheel Game</a>
+    <a href="crash.html" class="nav-btn active">🚀 Crash Game</a>
+  </div>
+</nav>
+
+<div class="game-hero">
+  <h1>🚀 Rocket Crash Investment</h1>
+  <p>Mula dengan RM500. Cash in sebelum roket lepas, tengok multiplier naik — tapi kena cash out sebelum roket meletup! Lambat cash out, untung lagi besar... tapi risiko hilang segalanya pun lagi besar. Capai RM1000 untuk menang!</p>
+  <div class="hero-badges">
+    <span class="hbadge">💰 RM500 → RM1000</span>
+    <span class="hbadge">🚀 Live Multiplier</span>
+    <span class="hbadge">🔊 Sound Effects</span>
+    <span class="hbadge">🏆 Leaderboard</span>
+  </div>
+</div>
+
+<!-- START SCREEN -->
+<div class="screen active" id="screenStart">
+  <div class="section-heading">🛰️ Cara Main</div>
+  <div class="rules-card">
+    <h3>Roket akan terbang naik — multiplier makin tinggi setiap saat:</h3>
+    <div class="rule-row"><span class="ri">1️⃣</span><span><b>Cash In</b> — letak berapa banyak duit nak labur sebelum roket lepas.</span></div>
+    <div class="rule-row"><span class="ri">2️⃣</span><span><b>Tengok Multiplier Naik</b> — 1.00x, 1.50x, 2x... makin lama, makin tinggi (dan makin risky).</span></div>
+    <div class="rule-row"><span class="ri">3️⃣</span><span><b>Cash Out</b> bila-bila masa nak kira untung = Taruhan × Multiplier semasa.</span></div>
+    <div class="rule-row"><span class="ri">💥</span><span>Tapi roket boleh <b>meletup bila-bila masa</b> — kalau anda tak cash out sebelum tu, semua duit taruhan <b>hilang</b>!</span></div>
+    <div class="rules-note">
+      💡 Lepas anda cash out, roket akan terus terbang sampai betul-betul meletup — supaya anda boleh nampak sama ada anda cash out tepat masa, atau sebenarnya boleh tunggu lagi. Pump those nerves! 😅
+    </div>
+  </div>
+  <button class="start-btn" onclick="startGame()">🚀 Mula Main — RM500</button>
+
+  <div class="leaderboard-preview">
+    <div class="lb-header">🏆 &nbsp;Papan Pendahulu – Cash Out Terbaik</div>
+    <div id="lbRows"><div class="lb-row" style="color:#9ca3af;font-size:0.8rem;padding:1rem;">Tiada skor lagi — jadilah yang pertama!</div></div>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div class="screen" id="screenGame">
+  <div class="hud">
+    <div class="hud-cell green cash-main" id="hudCashCell">
+      <div class="h-num" id="hudCash">RM500</div>
+      <div class="h-lbl">Duit Anda</div>
+    </div>
+    <div class="hud-cell">
+      <div class="h-num" id="hudRounds">0</div>
+      <div class="h-lbl">Round</div>
+    </div>
+    <div class="hud-cell amber">
+      <div class="h-num" id="hudBest">RM500</div>
+      <div class="h-lbl">Tertinggi</div>
+    </div>
+  </div>
+
+  <div class="goal-progress">
+    <div class="goal-labels"><span>RM0</span><span>🎯 Target: RM1000</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="goalFill" style="width:50%"></div></div>
+  </div>
+
+  <div class="crash-chips" id="crashChips">
+    <span class="chip-empty">Sejarah meletup akan muncul di sini...</span>
+  </div>
+
+  <div class="rocket-stage" id="rocketStage">
+    <div id="starField"></div>
+    <div class="boom-flash" id="boomFlash"></div>
+    <div class="mult-display idle-txt" id="multDisplay">Sedia untuk lepas? 🚀</div>
+    <div class="rocket-wrap" id="rocketWrap">
+      <div class="rocket-flame" id="rocketFlame"></div>
+      <span class="rocket-emoji" id="rocketEmoji">🚀</span>
+    </div>
+    <div class="launch-pad"></div>
+  </div>
+
+  <div class="heat-meter">
+    <div class="heat-labels"><span>🔥 Suhu Enjin</span><span id="heatLabel">0%</span></div>
+    <div class="heat-bar"><div class="heat-fill" id="heatFill"></div></div>
+  </div>
+
+  <!-- IDLE BET PANEL -->
+  <div class="bet-panel" id="betPanelIdle">
+    <h3><span>💵 Cash In Dulu</span><span style="color:#10b981;font-size:0.8rem;" id="cashAvail">Baki: RM500</span></h3>
+    <div class="single-bet-row">
+      <span class="bet-icon">🚀</span>
+      <div class="bet-input-wrap">
+        <button onclick="adjustBet(-10)">−</button>
+        <input type="number" id="betAmount" value="50" min="10" step="10"/>
+        <button onclick="adjustBet(10)">+</button>
+      </div>
+    </div>
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="quickBet(0.25)">25% Duit</button>
+      <button class="quick-btn" onclick="quickBet(0.5)">50% Duit</button>
+      <button class="quick-btn" onclick="quickBet(1)">All-In</button>
+    </div>
+    <button class="launch-btn" id="launchBtn" onclick="launchRocket()">🚀 LAUNCH ROKET</button>
+    <div class="error-msg" id="betError"></div>
+  </div>
+
+  <!-- FLIGHT PANEL (shown during active round) -->
+  <div class="bet-panel" id="betPanelFlight" style="display:none;">
+    <div class="flight-info">
+      <span>Taruhan: <b id="flightBet">RM0</b></span>
+      <span>Potensi Untung: <b id="flightPotential">RM0</b></span>
+    </div>
+    <button class="cashout-btn" id="cashoutBtn" onclick="cashOut()">💰 CASH OUT — RM0</button>
+    <div class="flight-note" id="flightNote"></div>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="screenResult">
+  <div class="result-hero">
+    <div class="result-grade" id="resultGrade">🏆</div>
+    <div class="result-title" id="resultTitle">Permainan Tamat!</div>
+    <div class="result-sub" id="resultSub"></div>
+  </div>
+  <div class="result-stats">
+    <div class="rs-cell green"><div class="rs-num" id="rsFinalCash">RM0</div><div class="rs-lbl">Duit Akhir</div></div>
+    <div class="rs-cell"><div class="rs-num" id="rsRounds">0</div><div class="rs-lbl">Jumlah Round</div></div>
+    <div class="rs-cell amber"><div class="rs-num" id="rsBest">RM0</div><div class="rs-lbl">Tertinggi Dicapai</div></div>
+  </div>
+  <div class="history-list">
+    <div class="hist-header">📋 &nbsp;Sejarah Round</div>
+    <div id="historyRows"></div>
+  </div>
+  <div class="name-section">
+    <label>Masukkan nama anda untuk papan pendahulu</label>
+    <input type="text" id="playerName" placeholder="cth. Ahmad Haziq" maxlength="20"/>
+    <button class="save-score-btn" onclick="saveScore()">💾 Simpan Skor Saya</button>
+  </div>
+  <div class="result-btns">
+    <button class="btn-replay" onclick="restartGame()">🔄 Main Semula</button>
+    <button class="btn-refs" onclick="window.location.href='index.html'">📚 Lihat Rujukan</button>
+  </div>
+</div>
+
+<!-- FEEDBACK OVERLAY -->
+<div class="feedback-overlay" id="feedbackOverlay">
+  <div class="feedback-box">
+    <div class="fb-icon" id="fbIcon">🎉</div>
+    <div class="fb-title" id="fbTitle">Roket Meletup!</div>
+    <div class="fb-result-color" id="fbResultColor"></div>
+    <div class="fb-body" id="fbBody"></div>
+    <div class="fb-points" id="fbPoints">+RM150</div>
+    <button class="fb-next" onclick="closeFeedback()">Teruskan →</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+//  AUDIO ENGINE
+// ════════════════════════════════
+let soundEnabled = true;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTone(freq, type, duration, volume=0.3, delay=0){
+  if(!soundEnabled) return;
+  try{
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.type = type; osc.frequency.value = freq;
+    const start = audioCtx.currentTime + delay;
+    gain.gain.setValueAtTime(volume, start);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+    osc.start(start); osc.stop(start + duration);
+  } catch(e){}
+}
+function playNoiseBurst(duration=0.3, volume=0.35, lowpass=900){
+  if(!soundEnabled) return;
+  try{
+    const bufferSize = Math.floor(audioCtx.sampleRate*duration);
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * (1 - i/bufferSize);
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = lowpass;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+    noise.start();
+  } catch(e){}
+}
+function playClick(){ playTone(600,'sine',0.08,0.15); }
+function playStart(){
+  playTone(392,'sine',0.1,0.2,0); playTone(494,'sine',0.1,0.2,0.1); playTone(587,'sine',0.12,0.25,0.2);
+}
+function playLaunch(){
+  playTone(150,'sawtooth',0.45,0.25,0); playTone(300,'sine',0.3,0.18,0.05); playNoiseBurst(0.4,0.18,1500);
+}
+function playHeartbeat(intensity=0){
+  const f = 85 + intensity*15;
+  playTone(f,'sine',0.07,0.16 + intensity*0.08,0);
+}
+function playCashoutChime(){
+  playTone(659,'sine',0.1,0.25,0); playTone(880,'sine',0.12,0.3,0.1); playTone(1108,'sine',0.18,0.35,0.2);
+}
+function playJackpot(){
+  playTone(523,'sine',0.1,0.3,0); playTone(659,'sine',0.1,0.3,0.08);
+  playTone(784,'sine',0.1,0.3,0.16); playTone(1046,'sine',0.1,0.35,0.24);
+  playTone(1318,'sine',0.25,0.4,0.32);
+}
+function playExplosion(){
+  playTone(80,'sawtooth',0.4,0.35,0); playTone(60,'square',0.5,0.3,0.05); playTone(40,'sawtooth',0.6,0.25,0.1);
+  playNoiseBurst(0.4,0.4,700);
+}
+function playFail(){
+  playTone(220,'sawtooth',0.18,0.25,0); playTone(196,'sawtooth',0.18,0.2,0.15); playTone(165,'sawtooth',0.15,0.18,0.28);
+}
+function playGameOver(){
+  playTone(330,'sine',0.2,0.25,0); playTone(294,'sine',0.2,0.25,0.18); playTone(220,'sine',0.35,0.3,0.36);
+}
+function playWinGame(){
+  playTone(523,'sine',0.15,0.3,0); playTone(659,'sine',0.15,0.3,0.15);
+  playTone(784,'sine',0.15,0.3,0.3); playTone(1046,'sine',0.3,0.4,0.45);
+}
+
+document.getElementById('soundToggle').onclick = () => {
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundToggle').textContent = soundEnabled ? '🔊' : '🔇';
+  if(soundEnabled) playClick();
+};
+
+// ════════════════════════════════
+//  CONFETTI
+// ════════════════════════════════
+function launchConfetti(count=35){
+  const colors = ['#e11d48','#10b981','#f59e0b','#3b82f6','#8b5cf6','#ec4899','#fff'];
+  for(let i=0;i<count;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `left:${Math.random()*100}vw;top:-10px;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*10}px;height:${6+Math.random()*10}px;border-radius:${Math.random()>0.5?'50%':'3px'};animation-duration:${0.8+Math.random()*1.2}s;animation-delay:${Math.random()*0.4}s;`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 2500);
+  }
+}
+
+function vibrate(pattern){
+  try{ if('vibrate' in navigator) navigator.vibrate(pattern); }catch(e){}
+}
+
+// ════════════════════════════════
+//  STAR FIELD (visual only)
+// ════════════════════════════════
+function generateStars(){
+  const field = document.getElementById('starField');
+  field.innerHTML = '';
+  for(let i=0;i<40;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = 1 + Math.random()*2;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*85}%;animation-delay:${Math.random()*2}s;`;
+    field.appendChild(s);
+  }
+}
+generateStars();
+
+// ════════════════════════════════
+//  CRASH POINT GENERATION
+// ════════════════════════════════
+const HOUSE_EDGE = 0.04;
+const MAX_CRASH = 30;
+function generateCrashPoint(){
+  // ~2% instant-crash chance for tension, like real crash games
+  if(Math.random() < 0.02) return 1.00;
+  const r = Math.random();
+  let cp = (1 - HOUSE_EDGE) / (1 - r);
+  cp = Math.min(cp, MAX_CRASH);
+  cp = Math.max(1.00, Math.floor(cp*100)/100);
+  return cp;
+}
+
+// ════════════════════════════════
+//  GAME STATE
+// ════════════════════════════════
+const GOAL = 1000;
+const START_CASH = 500;
+const GROWTH_RATE = 0.2;        // multiplier = e^(GROWTH_RATE * elapsed)
+const POST_CASHOUT_SPEEDUP = 3; // speeds up reveal once locked in
+const ROCKET_RISE_SECONDS = 11; // time to reach top of stage
+
+let cash = START_CASH, bestCash = START_CASH, roundCount = 0, history = [];
+let roundActive = false, crashPoint = 0, betAmount = 0, currentMultiplier = 1.00;
+let realStart = 0, cashedOutInfo = null; // {multiplier, time}
+let rafId = null, heartbeatTimer = null, displayedCash = START_CASH, cashAnimFrame = null;
+
+function startGame(){
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  cash = START_CASH; bestCash = START_CASH; roundCount = 0; history = [];
+  displayedCash = START_CASH;
+  playStart();
+  showScreen('screenGame');
+  resetRocketVisual();
+  document.getElementById('crashChips').innerHTML = '<span class="chip-empty">Sejarah meletup akan muncul di sini...</span>';
+  document.getElementById('betAmount').value = 50;
+  updateHUD();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ───── HUD ─────
+function updateHUD(animateCash=false, netChange=0){
+  if(animateCash){
+    animateCashTo(cash, netChange);
+  } else {
+    displayedCash = cash;
+    document.getElementById('hudCash').textContent = `RM${cash}`;
+  }
+  document.getElementById('hudRounds').textContent = roundCount;
+  document.getElementById('hudBest').textContent = `RM${bestCash}`;
+  document.getElementById('cashAvail').textContent = `Baki: RM${cash}`;
+  const pct = Math.min(100, Math.max(0,(cash/GOAL)*100));
+  document.getElementById('goalFill').style.width = `${pct}%`;
+
+  const cashCell = document.getElementById('hudCashCell');
+  if(cash > 0 && cash < 100){ cashCell.classList.add('low-cash'); }
+  else { cashCell.classList.remove('low-cash'); }
+}
+
+function spawnFloatingNumber(netChange){
+  const cell = document.getElementById('hudCashCell');
+  const el = document.createElement('div');
+  el.className = `float-num ${netChange >= 0 ? 'pos' : 'neg'}`;
+  el.textContent = `${netChange >= 0 ? '+' : ''}RM${netChange}`;
+  el.style.left = '50%'; el.style.top = '4px'; el.style.transform = 'translateX(-50%)';
+  cell.appendChild(el);
+  setTimeout(()=>el.remove(), 1150);
+}
+
+function animateCashTo(target, netChange){
+  if(cashAnimFrame) cancelAnimationFrame(cashAnimFrame);
+  const startVal = displayedCash;
+  const diff = target - startVal;
+  const duration = 550;
+  const startTime = performance.now();
+  const cashEl = document.getElementById('hudCash');
+  const cashCell = document.getElementById('hudCashCell');
+
+  cashCell.classList.remove('pop-win','pop-lose');
+  void cashCell.offsetWidth;
+  if(netChange > 0) cashCell.classList.add('pop-win');
+  else if(netChange < 0) cashCell.classList.add('pop-lose');
+  if(netChange !== 0) spawnFloatingNumber(netChange);
+
+  function step(now){
+    const elapsed = now - startTime;
+    const t = Math.min(1, elapsed/duration);
+    const eased = 1 - Math.pow(1-t, 3);
+    const current = Math.round(startVal + diff*eased);
+    displayedCash = current;
+    cashEl.textContent = `RM${current}`;
+    if(t < 1){ cashAnimFrame = requestAnimationFrame(step); }
+    else {
+      displayedCash = target; cashEl.textContent = `RM${target}`;
+      setTimeout(()=>cashCell.classList.remove('pop-win','pop-lose'), 300);
+    }
+  }
+  cashAnimFrame = requestAnimationFrame(step);
+}
+
+// ───── BET INPUT ─────
+function adjustBet(delta){
+  const inp = document.getElementById('betAmount');
+  let v = (parseInt(inp.value)||0) + delta;
+  v = Math.max(10, Math.min(v, cash));
+  inp.value = v;
+}
+function quickBet(frac){
+  const inp = document.getElementById('betAmount');
+  let v = Math.floor(cash * frac / 10) * 10;
+  v = Math.max(10, v);
+  inp.value = Math.min(v, cash);
+}
+
+// ───── CRASH CHIPS ─────
+function chipTier(cp){
+  if(cp < 1.5) return 'chip-low';
+  if(cp < 4) return 'chip-mid';
+  if(cp < 10) return 'chip-high';
+  return 'chip-mega';
+}
+function renderCrashChips(){
+  const wrap = document.getElementById('crashChips');
+  const recent = history.slice(-12);
+  if(recent.length === 0){
+    wrap.innerHTML = '<span class="chip-empty">Sejarah meletup akan muncul di sini...</span>';
+    return;
+  }
+  wrap.innerHTML = recent.map(h => `<span class="crash-chip ${chipTier(h.crashPoint)}">${h.crashPoint.toFixed(2)}×</span>`).join('');
+  wrap.scrollLeft = wrap.scrollWidth;
+}
+
+// ───── ROUND FLOW ─────
+function launchRocket(){
+  const errEl = document.getElementById('betError');
+  errEl.textContent = '';
+  const bet = parseInt(document.getElementById('betAmount').value) || 0;
+
+  if(bet < 10){ errEl.textContent = 'Minimum taruhan RM10.'; return; }
+  if(bet > cash){ errEl.textContent = `Tak cukup duit! Baki anda RM${cash}.`; return; }
+
+  betAmount = bet;
+  cash -= bet;
+  updateHUD(true, -bet);
+
+  crashPoint = generateCrashPoint();
+  currentMultiplier = 1.00;
+  cashedOutInfo = null;
+  roundActive = true;
+  realStart = performance.now();
+
+  document.getElementById('betPanelIdle').style.display = 'none';
+  document.getElementById('betPanelFlight').style.display = 'block';
+  document.getElementById('flightBet').textContent = `RM${bet}`;
+  document.getElementById('flightNote').textContent = '';
+  const cBtn = document.getElementById('cashoutBtn');
+  cBtn.disabled = false;
+  cBtn.classList.remove('danger');
+  cBtn.textContent = `💰 CASH OUT — RM${bet}`;
+  document.getElementById('launchBtn').disabled = true;
+
+  document.getElementById('rocketStage').classList.remove('danger');
+  document.getElementById('boomFlash').classList.remove('show');
+  document.getElementById('rocketWrap').classList.remove('exploded');
+  document.getElementById('multDisplay').className = 'mult-display';
+  document.getElementById('multDisplay').textContent = '1.00×';
+
+  playLaunch();
+  vibrate(40);
+  scheduleHeartbeat();
+  rafId = requestAnimationFrame(tickRound);
+}
+
+function getElapsedSeconds(now){
+  if(cashedOutInfo){
+    const preCashout = (cashedOutInfo.time - realStart) / 1000;
+    const postCashout = ((now - cashedOutInfo.time) / 1000) * POST_CASHOUT_SPEEDUP;
+    return preCashout + postCashout;
+  }
+  return (now - realStart) / 1000;
+}
+
+function tickRound(now){
+  const elapsed = getElapsedSeconds(now);
+  const multiplier = Math.exp(GROWTH_RATE * elapsed);
+  currentMultiplier = multiplier;
+
+  // multiplier display
+  const md = document.getElementById('multDisplay');
+  md.textContent = `${multiplier.toFixed(2)}×`;
+  md.className = 'mult-display';
+  if(multiplier >= 5) md.classList.add('tier-red');
+  else if(multiplier >= 2) md.classList.add('tier-amber');
+
+  // rocket position
+  const progress = Math.min(1, elapsed / ROCKET_RISE_SECONDS);
+  const stageH = document.getElementById('rocketStage').clientHeight;
+  const maxRise = stageH - 60;
+  const bottomPx = 14 + progress * maxRise;
+  const wrap = document.getElementById('rocketWrap');
+  wrap.style.bottom = `${bottomPx}px`;
+  const sway = Math.sin(elapsed*2.2) * 4;
+  wrap.style.left = `calc(50% + ${sway}px)`;
+  const flameScale = Math.min(1.8, 1 + multiplier/15);
+  document.getElementById('rocketFlame').style.transform = `translateX(-50%) scale(${flameScale.toFixed(2)})`;
+
+  // heat / danger
+  const heatPct = Math.min(100, (elapsed / 17) * 100);
+  document.getElementById('heatFill').style.width = `${heatPct}%`;
+  document.getElementById('heatLabel').textContent = `${Math.round(heatPct)}%`;
+  const stage = document.getElementById('rocketStage');
+  if(heatPct > 55) stage.classList.add('danger');
+  else stage.classList.remove('danger');
+
+  // cashout button styling escalation
+  if(!cashedOutInfo){
+    const potential = Math.floor(betAmount * multiplier);
+    document.getElementById('flightPotential').textContent = `RM${potential}`;
+    const cBtn = document.getElementById('cashoutBtn');
+    cBtn.textContent = `💰 CASH OUT — RM${potential}`;
+    if(heatPct > 65) cBtn.classList.add('danger'); else cBtn.classList.remove('danger');
+    document.getElementById('flightNote').textContent = heatPct > 65 ? '⚠️ Makin lama, makin merisikokan...' : '';
+  }
+
+  if(multiplier >= crashPoint){
+    crash();
+    return;
+  }
+  rafId = requestAnimationFrame(tickRound);
+}
+
+function scheduleHeartbeat(){
+  if(!roundActive) return;
+  const elapsed = getElapsedSeconds(performance.now());
+  const intensity = Math.min(1, elapsed / 14);
+  playHeartbeat(intensity);
+  if(intensity > 0.55) vibrate(15);
+  const delay = Math.max(160, 650 - elapsed*28);
+  heartbeatTimer = setTimeout(scheduleHeartbeat, delay);
+}
+
+function cashOut(){
+  if(!roundActive || cashedOutInfo) return;
+  const mult = currentMultiplier;
+  const win = Math.floor(betAmount * mult);
+  cashedOutInfo = { multiplier: mult, time: performance.now() };
+
+  cash += win;
+  if(cash > bestCash) bestCash = cash;
+  updateHUD(true, win - betAmount);
+
+  playCashoutChime();
+  if(mult >= 8) launchConfetti(30);
+  vibrate([20,30,20]);
+
+  const cBtn = document.getElementById('cashoutBtn');
+  cBtn.disabled = true;
+  cBtn.classList.remove('danger');
+  cBtn.textContent = `✅ Dikunci pada ${mult.toFixed(2)}× — RM${win}`;
+  document.getElementById('flightNote').textContent = 'Roket masih terbang... tunggu untuk lihat hasil penuh! 👀';
+}
+
+function crash(){
+  roundActive = false;
+  cancelAnimationFrame(rafId);
+  clearTimeout(heartbeatTimer);
+  roundCount++;
+
+  playExplosion();
+  vibrate([60,40,80]);
+  document.getElementById('rocketStage').classList.add('shaking');
+  document.getElementById('rocketStage').classList.remove('danger');
+  document.getElementById('rocketWrap').classList.add('exploded');
+  document.getElementById('rocketEmoji').textContent = '💥';
+  document.getElementById('boomFlash').classList.add('show');
+  setTimeout(()=>document.getElementById('rocketStage').classList.remove('shaking'), 420);
+
+  const md = document.getElementById('multDisplay');
+  md.textContent = `MELETUP! ${crashPoint.toFixed(2)}×`;
+  md.className = 'mult-display tier-red';
+
+  let entry;
+  if(cashedOutInfo){
+    const win = Math.floor(betAmount * cashedOutInfo.multiplier);
+    entry = { round: roundCount, bet: betAmount, crashPoint, cashedOutAt: cashedOutInfo.multiplier, result:'win', net: win - betAmount };
+    history.push(entry);
+    renderCrashChips();
+    showFeedbackCashedOut(entry);
+  } else {
+    entry = { round: roundCount, bet: betAmount, crashPoint, cashedOutAt: null, result:'lose', net: -betAmount };
+    history.push(entry);
+    renderCrashChips();
+    playFail();
+    showFeedbackLost(entry);
+  }
+}
+
+function showFeedbackCashedOut(entry){
+  const overlay = document.getElementById('feedbackOverlay');
+  document.getElementById('fbIcon').textContent = entry.cashedOutAt >= 8 ? '💎' : '🎉';
+  const t = document.getElementById('fbTitle');
+  t.textContent = 'Cash Out Berjaya!';
+  t.className = 'fb-title win';
+  document.getElementById('fbResultColor').innerHTML = `Roket sebenar meletup pada <strong>${entry.crashPoint.toFixed(2)}×</strong>`;
+
+  let body = `Anda cash out di <strong>${entry.cashedOutAt.toFixed(2)}×</strong> — taruhan RM${entry.bet} jadi RM${entry.bet + entry.net}.`;
+  if(entry.crashPoint > entry.cashedOutAt + 0.3){
+    const couldHave = Math.floor(entry.bet * entry.crashPoint) - entry.bet;
+    body += `<br><span class="hot">Kalau anda tunggu sampai akhir, untung boleh jadi +RM${couldHave}!</span>`;
+  } else {
+    body += `<br><span style="color:#10b981;font-weight:700;">Nasib baik anda cash out awal — kalau tunggu lagi sikit, semua hilang!</span>`;
+  }
+  document.getElementById('fbBody').innerHTML = body;
+
+  const pp = document.getElementById('fbPoints');
+  pp.textContent = `+RM${entry.net}`;
+  pp.className = 'fb-points pos';
+
+  overlay.classList.add('show');
+  overlay.dataset.gameEnd = (cash >= GOAL || cash <= 0) ? '1' : '0';
+}
+
+function showFeedbackLost(entry){
+  const overlay = document.getElementById('feedbackOverlay');
+  document.getElementById('fbIcon').textContent = '💥';
+  const t = document.getElementById('fbTitle');
+  t.textContent = 'Roket Meletup!';
+  t.className = 'fb-title lose';
+  document.getElementById('fbResultColor').innerHTML = `Meletup pada <strong>${entry.crashPoint.toFixed(2)}×</strong> — anda tak cash out tepat masa.`;
+  document.getElementById('fbBody').innerHTML = `Semua taruhan RM${entry.bet} <strong>hilang</strong>. Lain kali cash out lebih awal!`;
+
+  const pp = document.getElementById('fbPoints');
+  pp.textContent = `-RM${entry.bet}`;
+  pp.className = 'fb-points neg';
+
+  overlay.classList.add('show');
+  overlay.dataset.gameEnd = (cash >= GOAL || cash <= 0) ? '1' : '0';
+}
+
+function closeFeedback(){
+  playClick();
+  const overlay = document.getElementById('feedbackOverlay');
+  overlay.classList.remove('show');
+  resetRocketVisual();
+
+  if(overlay.dataset.gameEnd === '1'){
+    setTimeout(showResults, 200);
+  }
+}
+
+function resetRocketVisual(){
+  document.getElementById('betPanelFlight').style.display = 'none';
+  document.getElementById('betPanelIdle').style.display = 'block';
+  document.getElementById('launchBtn').disabled = false;
+  document.getElementById('betError').textContent = '';
+
+  const md = document.getElementById('multDisplay');
+  md.className = 'mult-display idle-txt';
+  md.textContent = 'Sedia untuk lepas? 🚀';
+
+  const wrap = document.getElementById('rocketWrap');
+  wrap.classList.remove('exploded');
+  wrap.style.bottom = '14px';
+  wrap.style.left = '50%';
+  document.getElementById('rocketEmoji').textContent = '🚀';
+  document.getElementById('boomFlash').classList.remove('show');
+  document.getElementById('heatFill').style.width = '0%';
+  document.getElementById('heatLabel').textContent = '0%';
+  document.getElementById('rocketStage').classList.remove('danger','shaking');
+
+  const bet = document.getElementById('betAmount');
+  bet.value = Math.min(parseInt(bet.value)||50, Math.max(10,cash));
+}
+
+// ───── END GAME ─────
+function showResults(){
+  showScreen('screenResult');
+  const won = cash >= GOAL;
+
+  let grade, title, sub;
+  if(won){
+    grade='🏆'; title='Anda Jutawan Roket!'; sub=`Tahniah! Anda capai RM${cash} dalam ${roundCount} round. Naluri cash-out anda memang tepat!`;
+    playWinGame(); launchConfetti(60);
+  } else {
+    grade='😓'; title='Bankrupt!'; sub=`Duit anda habis selepas ${roundCount} round. Tertinggi yang dicapai: RM${bestCash}. Cuba cash out lebih awal lain kali!`;
+    playGameOver();
+  }
+
+  document.getElementById('resultGrade').textContent = grade;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent = sub;
+  document.getElementById('rsFinalCash').textContent = `RM${cash}`;
+  document.getElementById('rsRounds').textContent = roundCount;
+  document.getElementById('rsBest').textContent = `RM${bestCash}`;
+
+  const hr = document.getElementById('historyRows');
+  hr.innerHTML = history.slice().reverse().map(h => {
+    const netCls = h.net >= 0 ? 'pos' : 'neg';
+    const co = h.cashedOutAt ? `cash out ${h.cashedOutAt.toFixed(2)}×` : 'tak cash out';
+    return `<div class="hist-row">
+      <span class="crash-chip ${chipTier(h.crashPoint)}" style="font-size:0.68rem;padding:3px 8px;">${h.crashPoint.toFixed(2)}×</span>
+      <span style="flex:1;">Round #${h.round} — ${co}</span>
+      <span class="hist-pts ${netCls}">${h.net>=0?'+':''}RM${h.net}</span>
+    </div>`;
+  }).join('');
+
+  renderLeaderboard();
+}
+
+// ════════════════════════════════
+//  LEADERBOARD
+// ════════════════════════════════
+function saveScore(){
+  const name = document.getElementById('playerName').value.trim() || 'Anon';
+  const won = cash >= GOAL;
+  const entry = { name, cash, bestCash, rounds: roundCount, won, date: new Date().toLocaleDateString('en-MY') };
+  let lb = JSON.parse(localStorage.getItem('teq_crash_lb') || '[]');
+  lb.push(entry);
+  lb.sort((a,b) => b.bestCash - a.bestCash);
+  lb = lb.slice(0,10);
+  localStorage.setItem('teq_crash_lb', JSON.stringify(lb));
+  renderLeaderboard();
+  document.querySelector('.save-score-btn').textContent = '✅ Skor Disimpan!';
+  playCashoutChime();
+}
+
+function renderLeaderboard(){
+  let lb = JSON.parse(localStorage.getItem('teq_crash_lb') || '[]');
+  const lbRows = document.getElementById('lbRows');
+  if(!lbRows) return;
+  if(lb.length === 0){
+    lbRows.innerHTML = '<div class="lb-row" style="color:#9ca3af;font-size:0.8rem;padding:1rem;">Tiada skor lagi — jadilah yang pertama!</div>';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  lbRows.innerHTML = lb.map((e,i) => `
+    <div class="lb-row">
+      <div class="lb-rank">${medals[i] || (i+1)}</div>
+      <div class="lb-name">${e.name} ${e.won?'🏆':''}</div>
+      <div style="font-size:0.7rem;color:#9ca3af;margin-right:8px;">${e.rounds} round</div>
+      <div class="lb-score">RM${e.bestCash}</div>
+    </div>
+  `).join('');
+}
+
+function restartGame(){
+  playClick();
+  showScreen('screenStart');
+  renderLeaderboard();
+}
+
+renderLeaderboard();
+</script>
+</body>
+</html>
