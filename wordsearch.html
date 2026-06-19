@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Investment Word Search – TEQ Technologies</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --red:#e11d48;--red-dark:#9f1239;--red-deep:#4c0519;
+      --red-glow:rgba(225,29,72,0.25);
+      --green:#10b981;--green-glow:rgba(16,185,129,0.25);
+      --bg:#fffaf9;--border:#fecdd3;--text:#1a0a0e;--muted:#9f1239;
+    }
+    body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    .bg-pattern{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 10%,rgba(225,29,72,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(139,92,246,0.05) 0%,transparent 50%);}
+
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.4rem;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(225,29,72,0.08);}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-circle{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#e11d48,#9f1239);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.72rem;color:#fff;flex-shrink:0;box-shadow:0 0 12px rgba(225,29,72,0.35);}
+    .nav-brand{font-weight:800;font-size:1rem;color:var(--red-dark);}
+    .nav-links{display:flex;gap:8px;}
+    .nav-btn{background:#fff;border:2px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:999px;cursor:pointer;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.15s;}
+    .nav-btn:hover{border-color:var(--red);color:var(--red);background:#fff5f7;}
+    .nav-btn.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 12px var(--red-glow);}
+
+    .hero{background:linear-gradient(135deg,#e11d48 0%,#9f1239 45%,#4c0519 100%);padding:2.2rem 1.5rem 1.8rem;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'🔤📊💼🏦📈💰🔍✨';position:absolute;top:-8px;left:0;right:0;font-size:1.8rem;letter-spacing:20px;opacity:0.1;animation:scrollEmoji 14s linear infinite;white-space:nowrap;}
+    @keyframes scrollEmoji{from{transform:translateX(100%);}to{transform:translateX(-100%);}}
+    .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:800;color:#fff;letter-spacing:-0.5px;}
+    .hero p{font-size:0.88rem;color:rgba(255,255,255,0.85);margin-top:6px;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.5;}
+    .hero-badges{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+    .hbadge{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.32);color:#fff;font-size:0.72rem;padding:4px 13px;border-radius:999px;font-weight:700;backdrop-filter:blur(4px);}
+
+    .main{max-width:700px;margin:0 auto;padding:1.5rem 1rem 3rem;position:relative;z-index:1;}
+
+    /* HUD */
+    .hud{display:flex;gap:8px;margin-bottom:1.2rem;}
+    .hud-cell{flex:1;background:#fff;border:2px solid var(--border);border-radius:12px;padding:0.6rem 0.8rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .hud-cell .h-num{font-size:1.1rem;font-weight:800;color:var(--red);}
+    .hud-cell.green .h-num{color:var(--green);}
+    .hud-cell .h-lbl{font-size:0.6rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;font-weight:600;}
+
+    /* GRID */
+    .grid-wrap{background:#fff;border:2px solid var(--border);border-radius:16px;padding:1rem;box-shadow:0 4px 20px rgba(225,29,72,0.07);margin-bottom:1.2rem;overflow-x:auto;}
+    .grid-title{font-size:0.8rem;font-weight:800;color:var(--red-dark);margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:0.5px;}
+    #wordGrid{display:inline-grid;grid-template-columns:repeat(12,1fr);gap:3px;user-select:none;}
+    .cell{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:700;color:var(--text);border-radius:6px;cursor:pointer;transition:all 0.12s;border:1.5px solid transparent;background:#fafafa;}
+    .cell:hover{background:#fce7ea;border-color:var(--border);}
+    .cell.selecting{background:#fee2e2;border-color:var(--red);color:var(--red);}
+    .cell.found{background:linear-gradient(135deg,#dcfce7,#bbf7d0) !important;border-color:#22c55e !important;color:#15803d !important;}
+    .cell.found-alt{background:linear-gradient(135deg,#dbeafe,#bfdbfe) !important;border-color:#3b82f6 !important;color:#1e40af !important;}
+    .cell.found-alt2{background:linear-gradient(135deg,#faf5ff,#ede9fe) !important;border-color:#8b5cf6 !important;color:#6d28d9 !important;}
+    .cell.found-alt3{background:linear-gradient(135deg,#fefce8,#fef08a) !important;border-color:#eab308 !important;color:#854d0e !important;}
+    .cell.found-alt4{background:linear-gradient(135deg,#fff1f2,#fecdd3) !important;border-color:#f43f5e !important;color:#be123c !important;}
+
+    /* WORD LIST */
+    .words-card{background:#fff;border:2px solid var(--border);border-radius:14px;padding:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.04);margin-bottom:1.2rem;}
+    .words-card h3{font-size:0.8rem;font-weight:800;color:var(--red-dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.8rem;}
+    .word-chips{display:flex;flex-wrap:wrap;gap:8px;}
+    .word-chip{padding:5px 12px;border-radius:999px;font-size:0.78rem;font-weight:700;border:2px solid var(--border);background:#fafafa;color:#374151;transition:all 0.18s;}
+    .word-chip.found{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-color:#22c55e;color:#15803d;text-decoration:line-through;}
+    .word-chip.found-alt{background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-color:#3b82f6;color:#1e40af;text-decoration:line-through;}
+    .word-chip.found-alt2{background:linear-gradient(135deg,#faf5ff,#ede9fe);border-color:#8b5cf6;color:#6d28d9;text-decoration:line-through;}
+    .word-chip.found-alt3{background:linear-gradient(135deg,#fefce8,#fef08a);border-color:#eab308;color:#854d0e;text-decoration:line-through;}
+    .word-chip.found-alt4{background:linear-gradient(135deg,#fff1f2,#fecdd3);border-color:#f43f5e;color:#be123c;text-decoration:line-through;}
+
+    /* BUTTONS */
+    .btn-row{display:flex;gap:10px;}
+    .btn-reset{flex:1;background:linear-gradient(135deg,#e11d48,#9f1239);border:none;color:#fff;padding:13px;border-radius:12px;font-size:0.95rem;font-weight:800;cursor:pointer;box-shadow:0 3px 14px var(--red-glow);transition:all 0.18s;}
+    .btn-reset:hover{transform:scale(1.02);}
+
+    /* WIN BANNER */
+    .win-banner{display:none;background:linear-gradient(135deg,#10b981,#059669);border-radius:16px;padding:1.4rem;text-align:center;color:#fff;margin-bottom:1.2rem;box-shadow:0 6px 24px rgba(16,185,129,0.3);animation:fadeIn 0.4s;}
+    @keyframes fadeIn{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+    .win-banner.show{display:block;}
+    .win-banner h2{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:6px;}
+    .win-banner p{font-size:0.88rem;opacity:0.9;}
+
+    footer{background:#fff;border-top:2px solid var(--border);text-align:center;padding:1.5rem 1rem;font-size:0.75rem;color:#6b7280;position:relative;z-index:1;}
+    footer span{color:var(--red);font-weight:800;}
+
+    @media(max-width:480px){
+      .cell{width:26px;height:26px;font-size:0.7rem;}
+      #wordGrid{gap:2px;}
+    }
+  </style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="logo-circle">TEQ</div>
+    <span class="nav-brand">TEQ Technologies</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-btn">📚 References</a>
+    <a href="game.html" class="nav-btn">💼 Investment Quiz</a>
+    <a href="wordsearch.html" class="nav-btn active">🔤 Word Search</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>🔤 Investment Word Search</h1>
+  <p>Find all the investment-related words hidden in the grid — horizontal, vertical, or diagonal!</p>
+  <div class="hero-badges">
+    <span class="hbadge">10 Words</span>
+    <span class="hbadge">12 × 12 Grid</span>
+    <span class="hbadge">Investment Terms</span>
+    <span class="hbadge">TEQ · 2026</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="hud">
+    <div class="hud-cell green"><div class="h-num" id="hud-found">0</div><div class="h-lbl">Found</div></div>
+    <div class="hud-cell"><div class="h-num" id="hud-remain">10</div><div class="h-lbl">Remaining</div></div>
+    <div class="hud-cell"><div class="h-num" id="hud-time">0s</div><div class="h-lbl">Time</div></div>
+  </div>
+
+  <div class="win-banner" id="winBanner">
+    <h2>🎉 Excellent! All Words Found!</h2>
+    <p id="winMsg">You found all 10 investment terms!</p>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="grid-title">🔍 Click a letter to start selecting, then click the last letter of the word</div>
+    <div id="wordGrid"></div>
+  </div>
+
+  <div class="words-card">
+    <h3>💼 Words to Find</h3>
+    <div class="word-chips" id="wordChips"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-reset" onclick="initGame()">🔄 New Game</button>
+  </div>
+</div>
+
+<footer>
+  <p><span>TEQ Technologies</span> · BKALK3063 Integrated Case Study · Universiti Utara Malaysia</p>
+  <p style="margin-top:4px;">Tunku Puteri Intan Safinaz School of Accountancy · 2026</p>
+</footer>
+
+<script>
+const WORDS = ['INVEST','CAPITAL','PROFIT','RETURN','EQUITY','DIVIDEND','PORTFOLIO','RISK','STARTUP','VALUATION'];
+const COLORS = ['found','found-alt','found-alt2','found-alt3','found-alt4','found','found-alt','found-alt2','found-alt3','found-alt4'];
+const GRID_SIZE = 12;
+
+let grid = [];
+let placedWords = []; // {word, cells:[{r,c}], colorClass}
+let selecting = false;
+let startCell = null;
+let foundWords = new Set();
+let timerInterval = null;
+let seconds = 0;
+
+function initGame() {
+  clearInterval(timerInterval);
+  seconds = 0;
+  foundWords.clear();
+  selecting = false;
+  startCell = null;
+  document.getElementById('winBanner').classList.remove('show');
+  buildGrid();
+  renderGrid();
+  renderWordChips();
+  updateHud();
+  timerInterval = setInterval(() => {
+    seconds++;
+    document.getElementById('hud-time').textContent = seconds + 's';
+  }, 1000);
+}
+
+function buildGrid() {
+  grid = Array.from({length: GRID_SIZE}, () => Array(GRID_SIZE).fill(''));
+  placedWords = [];
+  const directions = [
+    [0,1],[1,0],[1,1],[0,-1],[-1,0],[-1,-1],[1,-1],[-1,1]
+  ];
+  const shuffled = [...WORDS].sort(() => Math.random()-0.5);
+  shuffled.forEach((word, wi) => {
+    let placed = false;
+    for(let attempt=0; attempt<200 && !placed; attempt++) {
+      const dir = directions[Math.floor(Math.random()*directions.length)];
+      const [dr,dc] = dir;
+      const maxR = GRID_SIZE - Math.max(0, dr*(word.length-1));
+      const maxC = GRID_SIZE - Math.max(0, dc*(word.length-1));
+      const minR = -Math.min(0, dr*(word.length-1));
+      const minC = -Math.min(0, dc*(word.length-1));
+      if(maxR <= minR || maxC <= minC) continue;
+      const r = minR + Math.floor(Math.random()*(maxR-minR));
+      const c = minC + Math.floor(Math.random()*(maxC-minC));
+      let canPlace = true;
+      const cells = [];
+      for(let i=0; i<word.length; i++) {
+        const nr = r + dr*i, nc = c + dc*i;
+        if(nr<0||nr>=GRID_SIZE||nc<0||nc>=GRID_SIZE){canPlace=false;break;}
+        if(grid[nr][nc] !== '' && grid[nr][nc] !== word[i]){canPlace=false;break;}
+        cells.push({r:nr,c:nc});
+      }
+      if(canPlace) {
+        cells.forEach((cell,i) => grid[cell.r][cell.c] = word[i]);
+        placedWords.push({word, cells, colorClass: COLORS[wi]});
+        placed = true;
+      }
+    }
+  });
+  // Fill empty with random letters
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for(let r=0;r<GRID_SIZE;r++) for(let c=0;c<GRID_SIZE;c++)
+    if(!grid[r][c]) grid[r][c] = letters[Math.floor(Math.random()*26)];
+}
+
+function renderGrid() {
+  const container = document.getElementById('wordGrid');
+  container.innerHTML = '';
+  container.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+  for(let r=0;r<GRID_SIZE;r++) {
+    for(let c=0;c<GRID_SIZE;c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.textContent = grid[r][c];
+      cell.dataset.r = r; cell.dataset.c = c;
+      cell.addEventListener('click', () => onCellClick(r,c,cell));
+      container.appendChild(cell);
+    }
+  }
+}
+
+function getCell(r,c) {
+  return document.querySelector(`[data-r="${r}"][data-c="${c}"]`);
+}
+
+let currentPath = [];
+
+function onCellClick(r,c,el) {
+  if(!selecting) {
+    // Start selection
+    selecting = true;
+    startCell = {r,c};
+    currentPath = [{r,c}];
+    clearSelecting();
+    el.classList.add('selecting');
+  } else {
+    // End selection — check if valid straight line
+    if(r === startCell.r && c === startCell.c) {
+      // Clicked same cell - cancel
+      selecting = false;
+      clearSelecting();
+      return;
+    }
+    const path = getPath(startCell.r, startCell.c, r, c);
+    if(!path) {
+      // Not a straight line — restart from this cell
+      clearSelecting();
+      startCell = {r,c};
+      currentPath = [{r,c}];
+      el.classList.add('selecting');
+      return;
+    }
+    // Highlight path
+    path.forEach(({r,c}) => getCell(r,c).classList.add('selecting'));
+    // Check if path matches any word
+    const selected = path.map(({r,c}) => grid[r][c]).join('');
+    const selectedRev = selected.split('').reverse().join('');
+    let matched = null;
+    for(const pw of placedWords) {
+      if(foundWords.has(pw.word)) continue;
+      if(pw.word === selected || pw.word === selectedRev) {
+        matched = pw;
+        break;
+      }
+    }
+    if(matched) {
+      foundWords.add(matched.word);
+      matched.cells.forEach(({r,c}) => {
+        const cel = getCell(r,c);
+        cel.classList.remove('selecting');
+        // Remove previous found classes
+        cel.classList.forEach(cls => { if(cls.startsWith('found')) cel.classList.remove(cls); });
+        cel.classList.add(matched.colorClass);
+      });
+      updateHud();
+      updateWordChips();
+      if(foundWords.size === WORDS.length) {
+        clearInterval(timerInterval);
+        document.getElementById('winMsg').textContent = `You found all ${WORDS.length} investment terms in ${seconds} seconds!`;
+        document.getElementById('winBanner').classList.add('show');
+      }
+    } else {
+      clearSelecting();
+    }
+    selecting = false;
+    startCell = null;
+  }
+}
+
+function getPath(r1,c1,r2,c2) {
+  const dr = r2-r1, dc = c2-c1;
+  const len = Math.max(Math.abs(dr),Math.abs(dc));
+  if(len === 0) return null;
+  if(dr !== 0 && dc !== 0 && Math.abs(dr) !== Math.abs(dc)) return null;
+  const sr = dr===0?0:dr/Math.abs(dr), sc = dc===0?0:dc/Math.abs(dc);
+  const path = [];
+  for(let i=0;i<=len;i++) path.push({r:r1+sr*i,c:c1+sc*i});
+  return path;
+}
+
+function clearSelecting() {
+  document.querySelectorAll('.cell.selecting').forEach(c => c.classList.remove('selecting'));
+}
+
+function updateHud() {
+  document.getElementById('hud-found').textContent = foundWords.size;
+  document.getElementById('hud-remain').textContent = WORDS.length - foundWords.size;
+}
+
+function updateWordChips() {
+  document.querySelectorAll('.word-chip').forEach(chip => {
+    const word = chip.dataset.word;
+    if(foundWords.has(word)) {
+      const pw = placedWords.find(p=>p.word===word);
+      chip.className = 'word-chip ' + (pw ? pw.colorClass : 'found');
+    }
+  });
+}
+
+function renderWordChips() {
+  const container = document.getElementById('wordChips');
+  container.innerHTML = '';
+  WORDS.forEach(word => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.textContent = word;
+    chip.dataset.word = word;
+    container.appendChild(chip);
+  });
+}
+
+initGame();
+</script>
+</body>
+</html>

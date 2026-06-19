@@ -223,8 +223,8 @@
   </a>
   <div class="nav-links">
     <a href="index.html" class="nav-btn active">📚 References</a>
-    <a href="game.html" class="nav-btn">🎰 Wheel Game</a>
-    <a href="crash.html" class="nav-btn">🚀 Crash Game</a>
+    <a href="game.html" class="nav-btn">💼 Investment Quiz</a>
+    <a href="wordsearch.html" class="nav-btn">🔤 Word Search</a>
   </div>
 </nav>
 
@@ -234,7 +234,7 @@
     <div class="hero-circle">TEQ</div>
     <div style="text-align:left">
       <h1>TEQ Technologies</h1>
-      <div class="sub">BKALK3063 Integrated Case Study · Senarai Rujukan</div>
+      <div class="sub">BKALK3063 Integrated Case Study · Reference List</div>
     </div>
   </div>
   <div class="badge-row">
@@ -247,14 +247,14 @@
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat-cell"><div class="num" id="stat-total">14</div><div class="lbl">Rujukan</div></div>
-  <div class="stat-cell"><div class="num">5</div><div class="lbl">Kategori</div></div>
-  <div class="stat-cell"><div class="num">2024</div><div class="lbl">Tahun Terbaru</div></div>
+  <div class="stat-cell"><div class="num" id="stat-total">14</div><div class="lbl">References</div></div>
+  <div class="stat-cell"><div class="num">5</div><div class="lbl">Categories</div></div>
+  <div class="stat-cell"><div class="num">2024</div><div class="lbl">Latest Year</div></div>
 </div>
 
 <!-- CONTROLS -->
 <div class="controls">
-  <button class="btn-filter active" data-filter="all">🗂 Semua</button>
+  <button class="btn-filter active" data-filter="all">🗂 All</button>
   <button class="btn-filter" data-filter="vc">💰 Venture Capital</button>
   <button class="btn-filter" data-filter="dcf">📊 DCF / Penilaian</button>
   <button class="btn-filter" data-filter="india">🇮🇳 India / Startup</button>
@@ -262,11 +262,11 @@
 </div>
 
 <div class="search-wrap">
-  <input type="text" id="searchBox" placeholder="🔍  Cari mengikut penulis, tajuk atau topik…" />
+  <input type="text" id="searchBox" placeholder="🔍  Search by author, title or topic…" />
 </div>
 
 <div class="toggle-all-wrap">
-  <button class="btn-show-all" id="toggleBtn">Lihat Semua Rujukan ↓</button>
+  <button class="btn-show-all" id="toggleBtn">Lihat Semua References ↓</button>
 </div>
 
 <!-- REFERENCE CARDS -->
@@ -429,8 +429,8 @@
 
   <div class="empty-state" id="emptyState">
     <div class="empty-icon">🔍</div>
-    <p style="font-size:0.95rem;color:#6b7280;">Tiada rujukan yang sepadan dengan carian anda.</p>
-    <p style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Cuba kata kunci atau kategori yang lain.</p>
+    <p style="font-size:0.95rem;color:#6b7280;">No references match your search.</p>
+    <p style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Try a different keyword or category.</p>
   </div>
 </div>
 
@@ -473,7 +473,7 @@
       toggleBtn.style.display = 'none';
     } else {
       toggleBtn.style.display = 'inline-block';
-      toggleBtn.textContent = showAll ? 'Tunjuk Lebih Sedikit ↑' : `Lihat Semua ${totalMatching} Rujukan ↓`;
+      toggleBtn.textContent = showAll ? 'Show Less ↑' : `Lihat Semua ${totalMatching} References ↓`;
     }
   }
 
